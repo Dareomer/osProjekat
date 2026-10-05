@@ -1,0 +1,237 @@
+GAS LISTING /tmp/ccmoWHqO.s 			page 1
+
+
+   1              		.file	"KConsole.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	_ZN8KConsole4getcEv
+   9              	_ZN8KConsole4getcEv:
+  10              	.LFB0:
+  11              		.file 1 "src/KConsole.cpp"
+   1:src/KConsole.cpp **** //
+   2:src/KConsole.cpp **** // Created by os on 7/25/26.
+   3:src/KConsole.cpp **** //
+   4:src/KConsole.cpp **** #include "../h/KConsole.h"
+   5:src/KConsole.cpp **** #include "../lib/hw.h"
+   6:src/KConsole.cpp **** 
+   7:src/KConsole.cpp **** char KConsole::getc()
+   8:src/KConsole.cpp **** {
+  12              		.loc 1 8 1
+  13              		.cfi_startproc
+  14 0000 130101FF 		addi	sp,sp,-16
+  15              		.cfi_def_cfa_offset 16
+  16 0004 23348100 		sd	s0,8(sp)
+  17              		.cfi_offset 8, -8
+  18 0008 13040101 		addi	s0,sp,16
+  19              		.cfi_def_cfa 8, 0
+   9:src/KConsole.cpp ****     volatile uint8* status = (volatile uint8*)CONSOLE_STATUS;
+  20              		.loc 1 9 5
+  21              		.loc 1 9 21 is_stmt 0
+  22 000c 97070000 		la	a5,CONSOLE_STATUS
+  22      83B70700 
+  23 0014 03B70700 		ld	a4,0(a5)
+  24              	.LVL0:
+  10:src/KConsole.cpp ****     volatile uint8* rxData = (volatile uint8*)CONSOLE_RX_DATA;
+  25              		.loc 1 10 5 is_stmt 1
+  26              		.loc 1 10 21 is_stmt 0
+  27 0018 97070000 		la	a5,CONSOLE_RX_DATA
+  27      83B70700 
+  28 0020 83B60700 		ld	a3,0(a5)
+  29              	.LVL1:
+  30              	.L2:
+  11:src/KConsole.cpp ****     while ((*status & CONSOLE_RX_STATUS_BIT)==0)
+  31              		.loc 1 11 5 is_stmt 1
+  32              		.loc 1 11 45
+  33              		.loc 1 11 13 is_stmt 0
+  34 0024 83470700 		lbu	a5,0(a4)
+  35              		.loc 1 11 45
+  36 0028 93F71700 		andi	a5,a5,1
+  37 002c E38C07FE 		beqz	a5,.L2
+  12:src/KConsole.cpp ****     {
+  13:src/KConsole.cpp **** 
+  14:src/KConsole.cpp ****     }
+  15:src/KConsole.cpp ****     return (char)(*rxData);
+  38              		.loc 1 15 5 is_stmt 1
+  39              		.loc 1 15 26 is_stmt 0
+  40 0030 03C50600 		lbu	a0,0(a3)
+  16:src/KConsole.cpp **** }
+GAS LISTING /tmp/ccmoWHqO.s 			page 2
+
+
+  41              		.loc 1 16 1
+  42 0034 1375F50F 		andi	a0,a0,0xff
+  43 0038 03348100 		ld	s0,8(sp)
+  44              		.cfi_restore 8
+  45              		.cfi_def_cfa 2, 16
+  46 003c 13010101 		addi	sp,sp,16
+  47              		.cfi_def_cfa_offset 0
+  48 0040 67800000 		jr	ra
+  49              		.cfi_endproc
+  50              	.LFE0:
+  52              		.align	2
+  53              		.globl	_ZN8KConsole4putcEc
+  55              	_ZN8KConsole4putcEc:
+  56              	.LFB1:
+  17:src/KConsole.cpp **** 
+  18:src/KConsole.cpp **** void KConsole::putc(char c)
+  19:src/KConsole.cpp **** {
+  57              		.loc 1 19 1 is_stmt 1
+  58              		.cfi_startproc
+  59              	.LVL2:
+  60 0044 130101FF 		addi	sp,sp,-16
+  61              		.cfi_def_cfa_offset 16
+  62 0048 23348100 		sd	s0,8(sp)
+  63              		.cfi_offset 8, -8
+  64 004c 13040101 		addi	s0,sp,16
+  65              		.cfi_def_cfa 8, 0
+  20:src/KConsole.cpp ****     volatile uint8* status = (volatile uint8*)CONSOLE_STATUS;
+  66              		.loc 1 20 5
+  67              		.loc 1 20 21 is_stmt 0
+  68 0050 97070000 		la	a5,CONSOLE_STATUS
+  68      83B70700 
+  69 0058 03B70700 		ld	a4,0(a5)
+  70              	.LVL3:
+  21:src/KConsole.cpp ****     volatile uint8* txData = (volatile uint8*)CONSOLE_TX_DATA;
+  71              		.loc 1 21 5 is_stmt 1
+  72              		.loc 1 21 21 is_stmt 0
+  73 005c 97070000 		la	a5,CONSOLE_TX_DATA
+  73      83B70700 
+  74 0064 83B60700 		ld	a3,0(a5)
+  75              	.LVL4:
+  76              	.L5:
+  22:src/KConsole.cpp ****     while ((*status & CONSOLE_TX_STATUS_BIT)==0)
+  77              		.loc 1 22 5 is_stmt 1
+  78              		.loc 1 22 45
+  79              		.loc 1 22 13 is_stmt 0
+  80 0068 83470700 		lbu	a5,0(a4)
+  81 006c 93F7F70F 		andi	a5,a5,0xff
+  82              		.loc 1 22 45
+  83 0070 93F70702 		andi	a5,a5,32
+  84 0074 E38A07FE 		beqz	a5,.L5
+  23:src/KConsole.cpp ****     {
+  24:src/KConsole.cpp **** 
+  25:src/KConsole.cpp ****     }
+  26:src/KConsole.cpp ****     *txData = (uint8)c;
+  85              		.loc 1 26 5 is_stmt 1
+  86              		.loc 1 26 13 is_stmt 0
+  87 0078 2380A600 		sb	a0,0(a3)
+GAS LISTING /tmp/ccmoWHqO.s 			page 3
+
+
+  27:src/KConsole.cpp **** }
+  88              		.loc 1 27 1
+  89 007c 03348100 		ld	s0,8(sp)
+  90              		.cfi_restore 8
+  91              		.cfi_def_cfa 2, 16
+  92 0080 13010101 		addi	sp,sp,16
+  93              		.cfi_def_cfa_offset 0
+  94 0084 67800000 		jr	ra
+  95              		.cfi_endproc
+  96              	.LFE1:
+  98              	.Letext0:
+  99              		.file 2 "src/../lib/hw.h"
+ 100              		.file 3 "src/../h/KConsole.h"
+GAS LISTING /tmp/ccmoWHqO.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 KConsole.cpp
+     /tmp/ccmoWHqO.s:9      .text:0000000000000000 _ZN8KConsole4getcEv
+     /tmp/ccmoWHqO.s:13     .text:0000000000000000 .L0 
+     /tmp/ccmoWHqO.s:14     .text:0000000000000000 .L0 
+     /tmp/ccmoWHqO.s:15     .text:0000000000000004 .L0 
+     /tmp/ccmoWHqO.s:17     .text:0000000000000008 .L0 
+     /tmp/ccmoWHqO.s:19     .text:000000000000000c .L0 
+     /tmp/ccmoWHqO.s:21     .text:000000000000000c .L0 
+     /tmp/ccmoWHqO.s:22     .text:000000000000000c .L0 
+     /tmp/ccmoWHqO.s:26     .text:0000000000000018 .L0 
+     /tmp/ccmoWHqO.s:27     .text:0000000000000018 .L0 
+     /tmp/ccmoWHqO.s:32     .text:0000000000000024 .L0 
+     /tmp/ccmoWHqO.s:33     .text:0000000000000024 .L0 
+     /tmp/ccmoWHqO.s:34     .text:0000000000000024 .L0 
+     /tmp/ccmoWHqO.s:36     .text:0000000000000028 .L0 
+     /tmp/ccmoWHqO.s:39     .text:0000000000000030 .L0 
+     /tmp/ccmoWHqO.s:40     .text:0000000000000030 .L0 
+     /tmp/ccmoWHqO.s:42     .text:0000000000000034 .L0 
+     /tmp/ccmoWHqO.s:44     .text:000000000000003c .L0 
+     /tmp/ccmoWHqO.s:45     .text:000000000000003c .L0 
+     /tmp/ccmoWHqO.s:47     .text:0000000000000040 .L0 
+     /tmp/ccmoWHqO.s:49     .text:0000000000000044 .L0 
+     /tmp/ccmoWHqO.s:55     .text:0000000000000044 _ZN8KConsole4putcEc
+     /tmp/ccmoWHqO.s:58     .text:0000000000000044 .L0 
+     /tmp/ccmoWHqO.s:60     .text:0000000000000044 .L0 
+     /tmp/ccmoWHqO.s:61     .text:0000000000000048 .L0 
+     /tmp/ccmoWHqO.s:63     .text:000000000000004c .L0 
+     /tmp/ccmoWHqO.s:65     .text:0000000000000050 .L0 
+     /tmp/ccmoWHqO.s:67     .text:0000000000000050 .L0 
+     /tmp/ccmoWHqO.s:68     .text:0000000000000050 .L0 
+     /tmp/ccmoWHqO.s:72     .text:000000000000005c .L0 
+     /tmp/ccmoWHqO.s:73     .text:000000000000005c .L0 
+     /tmp/ccmoWHqO.s:78     .text:0000000000000068 .L0 
+     /tmp/ccmoWHqO.s:79     .text:0000000000000068 .L0 
+     /tmp/ccmoWHqO.s:80     .text:0000000000000068 .L0 
+     /tmp/ccmoWHqO.s:83     .text:0000000000000070 .L0 
+     /tmp/ccmoWHqO.s:86     .text:0000000000000078 .L0 
+     /tmp/ccmoWHqO.s:87     .text:0000000000000078 .L0 
+     /tmp/ccmoWHqO.s:89     .text:000000000000007c .L0 
+     /tmp/ccmoWHqO.s:90     .text:0000000000000080 .L0 
+     /tmp/ccmoWHqO.s:91     .text:0000000000000080 .L0 
+     /tmp/ccmoWHqO.s:93     .text:0000000000000084 .L0 
+     /tmp/ccmoWHqO.s:95     .text:0000000000000088 .L0 
+     /tmp/ccmoWHqO.s:101    .text:0000000000000088 .L0 
+     /tmp/ccmoWHqO.s:22     .text:000000000000000c .L0 
+     /tmp/ccmoWHqO.s:27     .text:0000000000000018 .L0 
+     /tmp/ccmoWHqO.s:68     .text:0000000000000050 .L0 
+     /tmp/ccmoWHqO.s:73     .text:000000000000005c .L0 
+     /tmp/ccmoWHqO.s:30     .text:0000000000000024 .L2
+     /tmp/ccmoWHqO.s:76     .text:0000000000000068 .L5
+     /tmp/ccmoWHqO.s:327    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccmoWHqO.s:662    .debug_str:0000000000000157 .LASF22
+     /tmp/ccmoWHqO.s:654    .debug_str:000000000000010a .LASF23
+     /tmp/ccmoWHqO.s:636    .debug_str:0000000000000070 .LASF24
+     /tmp/ccmoWHqO.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccmoWHqO.s:98     .text:0000000000000088 .Letext0
+GAS LISTING /tmp/ccmoWHqO.s 			page 5
+
+
+     /tmp/ccmoWHqO.s:614    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccmoWHqO.s:620    .debug_str:0000000000000014 .LASF25
+     /tmp/ccmoWHqO.s:650    .debug_str:00000000000000ef .LASF26
+     /tmp/ccmoWHqO.s:642    .debug_str:00000000000000ad .LASF27
+     /tmp/ccmoWHqO.s:668    .debug_str:0000000000000231 .LASF28
+     /tmp/ccmoWHqO.s:648    .debug_str:00000000000000db .LASF29
+     /tmp/ccmoWHqO.s:674    .debug_str:0000000000000256 .LASF0
+     /tmp/ccmoWHqO.s:616    .debug_str:0000000000000000 .LASF1
+     /tmp/ccmoWHqO.s:660    .debug_str:0000000000000144 .LASF2
+     /tmp/ccmoWHqO.s:646    .debug_str:00000000000000cd .LASF3
+     /tmp/ccmoWHqO.s:632    .debug_str:0000000000000058 .LASF4
+     /tmp/ccmoWHqO.s:640    .debug_str:00000000000000a6 .LASF5
+     /tmp/ccmoWHqO.s:634    .debug_str:000000000000005e .LASF6
+     /tmp/ccmoWHqO.s:626    .debug_str:000000000000003a .LASF7
+     /tmp/ccmoWHqO.s:638    .debug_str:0000000000000093 .LASF8
+     /tmp/ccmoWHqO.s:658    .debug_str:0000000000000131 .LASF9
+     /tmp/ccmoWHqO.s:670    .debug_str:0000000000000236 .LASF10
+     /tmp/ccmoWHqO.s:622    .debug_str:000000000000001d .LASF11
+     /tmp/ccmoWHqO.s:624    .debug_str:000000000000002b .LASF12
+     /tmp/ccmoWHqO.s:664    .debug_str:000000000000021b .LASF13
+     /tmp/ccmoWHqO.s:628    .debug_str:0000000000000041 .LASF14
+     /tmp/ccmoWHqO.s:672    .debug_str:0000000000000246 .LASF15
+     /tmp/ccmoWHqO.s:644    .debug_str:00000000000000c1 .LASF16
+     /tmp/ccmoWHqO.s:656    .debug_str:000000000000011b .LASF17
+     /tmp/ccmoWHqO.s:652    .debug_str:00000000000000f4 .LASF18
+     /tmp/ccmoWHqO.s:56     .text:0000000000000044 .LFB1
+     /tmp/ccmoWHqO.s:96     .text:0000000000000088 .LFE1
+     /tmp/ccmoWHqO.s:630    .debug_str:0000000000000051 .LASF19
+     /tmp/ccmoWHqO.s:666    .debug_str:000000000000022a .LASF20
+     /tmp/ccmoWHqO.s:10     .text:0000000000000000 .LFB0
+     /tmp/ccmoWHqO.s:50     .text:0000000000000044 .LFE0
+     /tmp/ccmoWHqO.s:618    .debug_str:000000000000000d .LASF21
+     /tmp/ccmoWHqO.s:102    .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+CONSOLE_STATUS
+CONSOLE_RX_DATA
+CONSOLE_TX_DATA

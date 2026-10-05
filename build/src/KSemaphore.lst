@@ -1,0 +1,2735 @@
+GAS LISTING /tmp/ccPaHA63.s 			page 1
+
+
+   1              		.file	"KSemaphore.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   8              	_ZL15findFirstSetBitm:
+   9              	.LFB3:
+  10              		.file 1 "src/KSemaphore.cpp"
+   1:src/KSemaphore.cpp **** //
+   2:src/KSemaphore.cpp **** // Created by os on 7/25/26.
+   3:src/KSemaphore.cpp **** //
+   4:src/KSemaphore.cpp **** #include "../h/KSemaphore.h"
+   5:src/KSemaphore.cpp **** 
+   6:src/KSemaphore.cpp **** 
+   7:src/KSemaphore.cpp **** alignas(16) KSemaphore KSemaphore::semaphorePool[KSemaphore::MAX_SEMAPHORES];
+   8:src/KSemaphore.cpp **** uint64 KSemaphore::usedBitmap = 0;
+   9:src/KSemaphore.cpp **** 
+  10:src/KSemaphore.cpp **** KSemaphore::KSemaphore():value(0),closed(true),waitHead(nullptr),waitTail(nullptr){}
+  11:src/KSemaphore.cpp **** 
+  12:src/KSemaphore.cpp **** static uint64 findFirstSetBit(uint64 value)
+  13:src/KSemaphore.cpp **** {
+  11              		.loc 1 13 1
+  12              		.cfi_startproc
+  13              	.LVL0:
+  14 0000 130101FF 		addi	sp,sp,-16
+  15              		.cfi_def_cfa_offset 16
+  16 0004 23348100 		sd	s0,8(sp)
+  17              		.cfi_offset 8, -8
+  18 0008 13040101 		addi	s0,sp,16
+  19              		.cfi_def_cfa 8, 0
+  20 000c 93070500 		mv	a5,a0
+  14:src/KSemaphore.cpp ****     uint64 index = 0;
+  21              		.loc 1 14 5
+  22              	.LVL1:
+  23              		.loc 1 14 12 is_stmt 0
+  24 0010 13050000 		li	a0,0
+  25              	.LVL2:
+  26              	.L3:
+  15:src/KSemaphore.cpp **** 
+  16:src/KSemaphore.cpp ****     while ((value & 1) == 0)
+  27              		.loc 1 16 5 is_stmt 1
+  28              		.loc 1 16 24
+  29              		.loc 1 16 19 is_stmt 0
+  30 0014 13F71700 		andi	a4,a5,1
+  31              		.loc 1 16 24
+  32 0018 63180700 		bnez	a4,.L1
+  17:src/KSemaphore.cpp ****     {
+  18:src/KSemaphore.cpp ****         value >>= 1;
+  33              		.loc 1 18 9 is_stmt 1
+  34              		.loc 1 18 15 is_stmt 0
+  35 001c 93D71700 		srli	a5,a5,1
+  36              	.LVL3:
+  19:src/KSemaphore.cpp ****         index++;
+  37              		.loc 1 19 9 is_stmt 1
+  38              		.loc 1 19 14 is_stmt 0
+  39 0020 13051500 		addi	a0,a0,1
+GAS LISTING /tmp/ccPaHA63.s 			page 2
+
+
+  40              	.LVL4:
+  16:src/KSemaphore.cpp ****     {
+  41              		.loc 1 16 5
+  42 0024 6FF01FFF 		j	.L3
+  43              	.L1:
+  20:src/KSemaphore.cpp ****     }
+  21:src/KSemaphore.cpp **** 
+  22:src/KSemaphore.cpp ****     return index;
+  23:src/KSemaphore.cpp **** }
+  44              		.loc 1 23 1
+  45 0028 03348100 		ld	s0,8(sp)
+  46              		.cfi_restore 8
+  47              		.cfi_def_cfa 2, 16
+  48 002c 13010101 		addi	sp,sp,16
+  49              		.cfi_def_cfa_offset 0
+  50 0030 67800000 		jr	ra
+  51              		.cfi_endproc
+  52              	.LFE3:
+  54              		.align	2
+  55              		.globl	_ZN10KSemaphoreC2Ev
+  57              	_ZN10KSemaphoreC2Ev:
+  58              	.LFB1:
+  10:src/KSemaphore.cpp **** 
+  59              		.loc 1 10 1 is_stmt 1
+  60              		.cfi_startproc
+  61              	.LVL5:
+  62 0034 130101FF 		addi	sp,sp,-16
+  63              		.cfi_def_cfa_offset 16
+  64 0038 23348100 		sd	s0,8(sp)
+  65              		.cfi_offset 8, -8
+  66 003c 13040101 		addi	s0,sp,16
+  67              		.cfi_def_cfa 8, 0
+  68              	.LBB2:
+  10:src/KSemaphore.cpp **** 
+  69              		.loc 1 10 82 is_stmt 0
+  70 0040 23200500 		sw	zero,0(a0)
+  71 0044 93071000 		li	a5,1
+  72 0048 2302F500 		sb	a5,4(a0)
+  73 004c 23340500 		sd	zero,8(a0)
+  74 0050 23380500 		sd	zero,16(a0)
+  75              	.LBE2:
+  10:src/KSemaphore.cpp **** 
+  76              		.loc 1 10 84
+  77 0054 03348100 		ld	s0,8(sp)
+  78              		.cfi_restore 8
+  79              		.cfi_def_cfa 2, 16
+  80 0058 13010101 		addi	sp,sp,16
+  81              		.cfi_def_cfa_offset 0
+  82 005c 67800000 		jr	ra
+  83              		.cfi_endproc
+  84              	.LFE1:
+  86              		.globl	_ZN10KSemaphoreC1Ev
+  87              		.set	_ZN10KSemaphoreC1Ev,_ZN10KSemaphoreC2Ev
+  88              		.align	2
+  90              	_Z41__static_initialization_and_destruction_0ii:
+  91              	.LFB20:
+  24:src/KSemaphore.cpp **** 
+GAS LISTING /tmp/ccPaHA63.s 			page 3
+
+
+  25:src/KSemaphore.cpp **** void KSemaphore::reset(unsigned initialValue)
+  26:src/KSemaphore.cpp **** {
+  27:src/KSemaphore.cpp ****     value = (int)initialValue;
+  28:src/KSemaphore.cpp ****     closed = false;
+  29:src/KSemaphore.cpp **** 
+  30:src/KSemaphore.cpp ****     waitHead = nullptr;
+  31:src/KSemaphore.cpp ****     waitTail = nullptr;
+  32:src/KSemaphore.cpp **** }
+  33:src/KSemaphore.cpp **** 
+  34:src/KSemaphore.cpp **** KSemaphore* KSemaphore::allocate(unsigned initialValue)
+  35:src/KSemaphore.cpp **** {
+  36:src/KSemaphore.cpp ****     if (usedBitmap == ~(uint64)0)
+  37:src/KSemaphore.cpp ****     {
+  38:src/KSemaphore.cpp ****         return nullptr;
+  39:src/KSemaphore.cpp ****     }
+  40:src/KSemaphore.cpp **** 
+  41:src/KSemaphore.cpp ****     uint64 freeSlots = ~usedBitmap;
+  42:src/KSemaphore.cpp ****     uint64 index = findFirstSetBit(freeSlots);
+  43:src/KSemaphore.cpp **** 
+  44:src/KSemaphore.cpp ****     usedBitmap |= ((uint64)1 << index);
+  45:src/KSemaphore.cpp **** 
+  46:src/KSemaphore.cpp ****     KSemaphore* semaphore =
+  47:src/KSemaphore.cpp ****         &semaphorePool[index];
+  48:src/KSemaphore.cpp **** 
+  49:src/KSemaphore.cpp ****     semaphore->reset(initialValue);
+  50:src/KSemaphore.cpp **** 
+  51:src/KSemaphore.cpp ****     return semaphore;
+  52:src/KSemaphore.cpp **** }
+  53:src/KSemaphore.cpp **** 
+  54:src/KSemaphore.cpp **** 
+  55:src/KSemaphore.cpp **** 
+  56:src/KSemaphore.cpp **** int KSemaphore::release(KSemaphore* semaphore)
+  57:src/KSemaphore.cpp **** {
+  58:src/KSemaphore.cpp ****     if (semaphore == nullptr)
+  59:src/KSemaphore.cpp ****     {
+  60:src/KSemaphore.cpp ****         return -1;
+  61:src/KSemaphore.cpp ****     }
+  62:src/KSemaphore.cpp **** 
+  63:src/KSemaphore.cpp ****     if (semaphore < &semaphorePool[0] ||
+  64:src/KSemaphore.cpp ****         semaphore >=
+  65:src/KSemaphore.cpp ****             &semaphorePool[MAX_SEMAPHORES])
+  66:src/KSemaphore.cpp ****     {
+  67:src/KSemaphore.cpp ****         return -2;
+  68:src/KSemaphore.cpp ****     }
+  69:src/KSemaphore.cpp **** 
+  70:src/KSemaphore.cpp ****     uint64 index =
+  71:src/KSemaphore.cpp ****         (uint64)(semaphore - semaphorePool);
+  72:src/KSemaphore.cpp **** 
+  73:src/KSemaphore.cpp ****     uint64 bit =
+  74:src/KSemaphore.cpp ****         ((uint64)1 << index);
+  75:src/KSemaphore.cpp **** 
+  76:src/KSemaphore.cpp ****     if ((usedBitmap & bit) == 0)
+  77:src/KSemaphore.cpp ****     {
+  78:src/KSemaphore.cpp ****         return -3;
+  79:src/KSemaphore.cpp ****     }
+  80:src/KSemaphore.cpp **** 
+  81:src/KSemaphore.cpp ****     /*
+GAS LISTING /tmp/ccPaHA63.s 			page 4
+
+
+  82:src/KSemaphore.cpp ****      * Dok postoje niti u redu, objekat se
+  83:src/KSemaphore.cpp ****      * ne sme samo resetovati.
+  84:src/KSemaphore.cpp ****      */
+  85:src/KSemaphore.cpp ****     if (semaphore->waitHead != nullptr)
+  86:src/KSemaphore.cpp ****     {
+  87:src/KSemaphore.cpp ****         return -4;
+  88:src/KSemaphore.cpp ****     }
+  89:src/KSemaphore.cpp **** 
+  90:src/KSemaphore.cpp ****     semaphore->value = 0;
+  91:src/KSemaphore.cpp ****     semaphore->closed = true;
+  92:src/KSemaphore.cpp ****     semaphore->waitHead = nullptr;
+  93:src/KSemaphore.cpp ****     semaphore->waitTail = nullptr;
+  94:src/KSemaphore.cpp **** 
+  95:src/KSemaphore.cpp ****     usedBitmap &= ~bit;
+  96:src/KSemaphore.cpp **** 
+  97:src/KSemaphore.cpp ****     return 0;
+  98:src/KSemaphore.cpp **** }
+  99:src/KSemaphore.cpp **** 
+ 100:src/KSemaphore.cpp **** int KSemaphore::waitN(unsigned n)
+ 101:src/KSemaphore.cpp **** {
+ 102:src/KSemaphore.cpp ****     if (closed) return -1;
+ 103:src/KSemaphore.cpp ****     if (n==0) return 0;
+ 104:src/KSemaphore.cpp ****     if ((unsigned)value>=n)
+ 105:src/KSemaphore.cpp ****     {
+ 106:src/KSemaphore.cpp ****         value-=(int)n;
+ 107:src/KSemaphore.cpp ****         return 0;
+ 108:src/KSemaphore.cpp ****     }
+ 109:src/KSemaphore.cpp ****     KThread* current = KThread::running;
+ 110:src/KSemaphore.cpp ****     if (current == nullptr || current->status != KThread::RUNNING) return -2;
+ 111:src/KSemaphore.cpp ****     current->waitUnits = n;
+ 112:src/KSemaphore.cpp ****     current->waitResult = 0;
+ 113:src/KSemaphore.cpp ****     putWaitQueue(current);
+ 114:src/KSemaphore.cpp ****     int result = KThread::block();
+ 115:src/KSemaphore.cpp ****     if (result<0) return result;
+ 116:src/KSemaphore.cpp ****     result = current->waitResult;
+ 117:src/KSemaphore.cpp ****     current->waitUnits=0;
+ 118:src/KSemaphore.cpp ****     current->waitResult= 0;
+ 119:src/KSemaphore.cpp ****     return result;
+ 120:src/KSemaphore.cpp **** }
+ 121:src/KSemaphore.cpp **** 
+ 122:src/KSemaphore.cpp **** int KSemaphore::signalN(unsigned n)
+ 123:src/KSemaphore.cpp **** {
+ 124:src/KSemaphore.cpp ****     if (closed) return -1;
+ 125:src/KSemaphore.cpp ****     if (n==0) return 0;
+ 126:src/KSemaphore.cpp ****     //ovde ubaciti zastitu od prevelikog n ako treba
+ 127:src/KSemaphore.cpp ****     value+=(int)n;
+ 128:src/KSemaphore.cpp ****     while (waitHead!=nullptr)
+ 129:src/KSemaphore.cpp ****     {
+ 130:src/KSemaphore.cpp ****         KThread* thread=waitHead;
+ 131:src/KSemaphore.cpp ****         if (thread->waitUnits>(unsigned)value)
+ 132:src/KSemaphore.cpp ****         {
+ 133:src/KSemaphore.cpp ****             break;
+ 134:src/KSemaphore.cpp ****         }
+ 135:src/KSemaphore.cpp ****         value-=(int)thread->waitUnits;
+ 136:src/KSemaphore.cpp ****         thread = getWaitQueue();
+ 137:src/KSemaphore.cpp ****         thread->waitResult = 0;
+ 138:src/KSemaphore.cpp ****         int result = KThread::unblock(thread);
+GAS LISTING /tmp/ccPaHA63.s 			page 5
+
+
+ 139:src/KSemaphore.cpp ****         if (result<0) return -3;
+ 140:src/KSemaphore.cpp ****     }
+ 141:src/KSemaphore.cpp ****     return 0;
+ 142:src/KSemaphore.cpp **** }
+ 143:src/KSemaphore.cpp **** 
+ 144:src/KSemaphore.cpp **** int KSemaphore::wait()
+ 145:src/KSemaphore.cpp **** {
+ 146:src/KSemaphore.cpp ****     return waitN(1);
+ 147:src/KSemaphore.cpp **** }
+ 148:src/KSemaphore.cpp **** 
+ 149:src/KSemaphore.cpp **** int KSemaphore::signal()
+ 150:src/KSemaphore.cpp **** {
+ 151:src/KSemaphore.cpp ****     return signalN(1);
+ 152:src/KSemaphore.cpp **** }
+ 153:src/KSemaphore.cpp **** 
+ 154:src/KSemaphore.cpp **** int KSemaphore::close()
+ 155:src/KSemaphore.cpp **** {
+ 156:src/KSemaphore.cpp ****     if (closed) return -1;
+ 157:src/KSemaphore.cpp ****     closed = true;
+ 158:src/KSemaphore.cpp ****     value=0;
+ 159:src/KSemaphore.cpp ****     while (waitHead != nullptr)
+ 160:src/KSemaphore.cpp ****     {
+ 161:src/KSemaphore.cpp ****         KThread* thread = getWaitQueue();
+ 162:src/KSemaphore.cpp ****         thread->waitResult=-1;
+ 163:src/KSemaphore.cpp ****         thread->waitUnits=0;
+ 164:src/KSemaphore.cpp ****         int result = KThread::unblock(thread);
+ 165:src/KSemaphore.cpp ****         if (result<0) return -2;
+ 166:src/KSemaphore.cpp ****     }
+ 167:src/KSemaphore.cpp ****     return 0;
+ 168:src/KSemaphore.cpp **** }
+ 169:src/KSemaphore.cpp **** 
+ 170:src/KSemaphore.cpp **** bool KSemaphore::isAllocated(const KSemaphore* semaphore)
+ 171:src/KSemaphore.cpp **** {
+ 172:src/KSemaphore.cpp ****     if (semaphore == nullptr)
+ 173:src/KSemaphore.cpp ****     {
+ 174:src/KSemaphore.cpp ****         return false;
+ 175:src/KSemaphore.cpp ****     }
+ 176:src/KSemaphore.cpp **** 
+ 177:src/KSemaphore.cpp ****     if (semaphore < &semaphorePool[0] ||semaphore >=&semaphorePool[MAX_SEMAPHORES])
+ 178:src/KSemaphore.cpp ****     {
+ 179:src/KSemaphore.cpp ****         return false;
+ 180:src/KSemaphore.cpp ****     }
+ 181:src/KSemaphore.cpp **** 
+ 182:src/KSemaphore.cpp ****     uint64 index =
+ 183:src/KSemaphore.cpp ****         (uint64)(semaphore - semaphorePool);
+ 184:src/KSemaphore.cpp **** 
+ 185:src/KSemaphore.cpp ****     uint64 bit =
+ 186:src/KSemaphore.cpp ****         ((uint64)1 << index);
+ 187:src/KSemaphore.cpp **** 
+ 188:src/KSemaphore.cpp ****     return (usedBitmap & bit) != 0;
+ 189:src/KSemaphore.cpp **** }
+ 190:src/KSemaphore.cpp **** 
+ 191:src/KSemaphore.cpp **** 
+ 192:src/KSemaphore.cpp **** uint64 KSemaphore::getUsedBitmap()
+ 193:src/KSemaphore.cpp **** {
+ 194:src/KSemaphore.cpp ****     return usedBitmap;
+ 195:src/KSemaphore.cpp **** }
+GAS LISTING /tmp/ccPaHA63.s 			page 6
+
+
+ 196:src/KSemaphore.cpp **** 
+ 197:src/KSemaphore.cpp **** uint64 KSemaphore::getAllocatedCount()
+ 198:src/KSemaphore.cpp **** {
+ 199:src/KSemaphore.cpp ****     uint64 count = 0;
+ 200:src/KSemaphore.cpp ****     uint64 bitmap = usedBitmap;
+ 201:src/KSemaphore.cpp **** 
+ 202:src/KSemaphore.cpp ****     while (bitmap != 0)
+ 203:src/KSemaphore.cpp ****     {
+ 204:src/KSemaphore.cpp ****         bitmap &= bitmap - 1;
+ 205:src/KSemaphore.cpp ****         count++;
+ 206:src/KSemaphore.cpp ****     }
+ 207:src/KSemaphore.cpp **** 
+ 208:src/KSemaphore.cpp ****     return count;
+ 209:src/KSemaphore.cpp **** }
+ 210:src/KSemaphore.cpp **** 
+ 211:src/KSemaphore.cpp **** 
+ 212:src/KSemaphore.cpp **** int KSemaphore::getValue() const
+ 213:src/KSemaphore.cpp **** {
+ 214:src/KSemaphore.cpp ****     return value;
+ 215:src/KSemaphore.cpp **** }
+ 216:src/KSemaphore.cpp **** 
+ 217:src/KSemaphore.cpp **** bool KSemaphore::isClosed() const
+ 218:src/KSemaphore.cpp **** {
+ 219:src/KSemaphore.cpp ****     return closed;
+ 220:src/KSemaphore.cpp **** }
+ 221:src/KSemaphore.cpp **** 
+ 222:src/KSemaphore.cpp **** bool KSemaphore::hasWaitingThreads() const
+ 223:src/KSemaphore.cpp **** {
+ 224:src/KSemaphore.cpp ****     return waitHead != nullptr;
+ 225:src/KSemaphore.cpp **** }
+ 226:src/KSemaphore.cpp **** 
+ 227:src/KSemaphore.cpp **** 
+ 228:src/KSemaphore.cpp **** void KSemaphore::putWaitQueue(KThread* thread)
+ 229:src/KSemaphore.cpp **** {
+ 230:src/KSemaphore.cpp ****     if (thread == nullptr)
+ 231:src/KSemaphore.cpp ****     {
+ 232:src/KSemaphore.cpp ****         return;
+ 233:src/KSemaphore.cpp ****     }
+ 234:src/KSemaphore.cpp **** 
+ 235:src/KSemaphore.cpp ****     thread->waitNext = nullptr;
+ 236:src/KSemaphore.cpp **** 
+ 237:src/KSemaphore.cpp ****     if (waitTail == nullptr)
+ 238:src/KSemaphore.cpp ****     {
+ 239:src/KSemaphore.cpp ****         waitHead = thread;
+ 240:src/KSemaphore.cpp ****         waitTail = thread;
+ 241:src/KSemaphore.cpp ****         return;
+ 242:src/KSemaphore.cpp ****     }
+ 243:src/KSemaphore.cpp **** 
+ 244:src/KSemaphore.cpp ****     waitTail->waitNext = thread;
+ 245:src/KSemaphore.cpp ****     waitTail = thread;
+ 246:src/KSemaphore.cpp **** }
+ 247:src/KSemaphore.cpp **** 
+ 248:src/KSemaphore.cpp **** 
+ 249:src/KSemaphore.cpp **** 
+ 250:src/KSemaphore.cpp **** KThread* KSemaphore::getWaitQueue()
+ 251:src/KSemaphore.cpp **** {
+ 252:src/KSemaphore.cpp ****     if (waitHead == nullptr)
+GAS LISTING /tmp/ccPaHA63.s 			page 7
+
+
+ 253:src/KSemaphore.cpp ****     {
+ 254:src/KSemaphore.cpp ****         return nullptr;
+ 255:src/KSemaphore.cpp ****     }
+ 256:src/KSemaphore.cpp **** 
+ 257:src/KSemaphore.cpp ****     KThread* thread = waitHead;
+ 258:src/KSemaphore.cpp **** 
+ 259:src/KSemaphore.cpp ****     waitHead = waitHead->waitNext;
+ 260:src/KSemaphore.cpp **** 
+ 261:src/KSemaphore.cpp ****     if (waitHead == nullptr)
+ 262:src/KSemaphore.cpp ****     {
+ 263:src/KSemaphore.cpp ****         waitTail = nullptr;
+ 264:src/KSemaphore.cpp ****     }
+ 265:src/KSemaphore.cpp **** 
+ 266:src/KSemaphore.cpp ****     thread->waitNext = nullptr;
+ 267:src/KSemaphore.cpp **** 
+ 268:src/KSemaphore.cpp ****     return thread;
+ 269:src/KSemaphore.cpp **** }...
+  92              		.loc 1 269 1 is_stmt 1
+  93              		.cfi_startproc
+  94              	.LVL6:
+  95 0060 93071000 		li	a5,1
+  96 0064 6304F500 		beq	a0,a5,.L14
+  97              	.L11:
+  98 0068 67800000 		ret
+  99              	.L14:
+ 100              		.loc 1 269 1 is_stmt 0 discriminator 1
+ 101 006c B7070100 		li	a5,65536
+ 102 0070 9387F7FF 		addi	a5,a5,-1
+ 103 0074 E39AF5FE 		bne	a1,a5,.L11
+ 104              		.loc 1 269 1
+ 105 0078 130101FE 		addi	sp,sp,-32
+ 106              		.cfi_def_cfa_offset 32
+ 107 007c 233C1100 		sd	ra,24(sp)
+ 108 0080 23388100 		sd	s0,16(sp)
+ 109 0084 23349100 		sd	s1,8(sp)
+ 110 0088 23302101 		sd	s2,0(sp)
+ 111              		.cfi_offset 1, -8
+ 112              		.cfi_offset 8, -16
+ 113              		.cfi_offset 9, -24
+ 114              		.cfi_offset 18, -32
+ 115 008c 13040102 		addi	s0,sp,32
+ 116              		.cfi_def_cfa 8, 0
+   7:src/KSemaphore.cpp **** alignas(16) KSemaphore KSemaphore::semaphorePool[KSemaphore::MAX_SEMAPHORES];
+ 117              		.loc 1 7 76
+ 118 0090 9304F003 		li	s1,63
+ 119 0094 17090000 		lla	s2,.LANCHOR0
+ 119      13090900 
+ 120              	.LVL7:
+ 121              	.L9:
+   7:src/KSemaphore.cpp **** alignas(16) KSemaphore KSemaphore::semaphorePool[KSemaphore::MAX_SEMAPHORES];
+ 122              		.loc 1 7 76 is_stmt 1 discriminator 4
+ 123 009c 63CE0400 		bltz	s1,.L7
+   7:src/KSemaphore.cpp **** alignas(16) KSemaphore KSemaphore::semaphorePool[KSemaphore::MAX_SEMAPHORES];
+ 124              		.loc 1 7 76 is_stmt 0 discriminator 3
+ 125 00a0 13050900 		mv	a0,s2
+ 126 00a4 97000000 		call	_ZN10KSemaphoreC1Ev
+ 126      E7800000 
+GAS LISTING /tmp/ccPaHA63.s 			page 8
+
+
+ 127              	.LVL8:
+ 128 00ac 13098901 		addi	s2,s2,24
+   7:src/KSemaphore.cpp **** alignas(16) KSemaphore KSemaphore::semaphorePool[KSemaphore::MAX_SEMAPHORES];
+ 129              		.loc 1 7 76 is_stmt 1 discriminator 3
+ 130 00b0 9384F4FF 		addi	s1,s1,-1
+ 131 00b4 6FF09FFE 		j	.L9
+ 132              	.L7:
+ 133              		.loc 1 269 1 is_stmt 0
+ 134 00b8 83308101 		ld	ra,24(sp)
+ 135              		.cfi_restore 1
+ 136 00bc 03340101 		ld	s0,16(sp)
+ 137              		.cfi_restore 8
+ 138              		.cfi_def_cfa 2, 32
+ 139 00c0 83348100 		ld	s1,8(sp)
+ 140              		.cfi_restore 9
+ 141 00c4 03390100 		ld	s2,0(sp)
+ 142              		.cfi_restore 18
+ 143 00c8 13010102 		addi	sp,sp,32
+ 144              		.cfi_def_cfa_offset 0
+ 145 00cc 67800000 		jr	ra
+ 146              		.cfi_endproc
+ 147              	.LFE20:
+ 149              		.align	2
+ 150              		.globl	_ZN10KSemaphore5resetEj
+ 152              	_ZN10KSemaphore5resetEj:
+ 153              	.LFB4:
+  26:src/KSemaphore.cpp **** {
+ 154              		.loc 1 26 1 is_stmt 1
+ 155              		.cfi_startproc
+ 156              	.LVL9:
+ 157 00d0 130101FF 		addi	sp,sp,-16
+ 158              		.cfi_def_cfa_offset 16
+ 159 00d4 23348100 		sd	s0,8(sp)
+ 160              		.cfi_offset 8, -8
+ 161 00d8 13040101 		addi	s0,sp,16
+ 162              		.cfi_def_cfa 8, 0
+  27:src/KSemaphore.cpp ****     value = (int)initialValue;
+ 163              		.loc 1 27 5
+  27:src/KSemaphore.cpp ****     value = (int)initialValue;
+ 164              		.loc 1 27 11 is_stmt 0
+ 165 00dc 2320B500 		sw	a1,0(a0)
+  28:src/KSemaphore.cpp ****     closed = false;
+ 166              		.loc 1 28 5 is_stmt 1
+  28:src/KSemaphore.cpp ****     closed = false;
+ 167              		.loc 1 28 12 is_stmt 0
+ 168 00e0 23020500 		sb	zero,4(a0)
+  30:src/KSemaphore.cpp ****     waitHead = nullptr;
+ 169              		.loc 1 30 5 is_stmt 1
+  30:src/KSemaphore.cpp ****     waitHead = nullptr;
+ 170              		.loc 1 30 14 is_stmt 0
+ 171 00e4 23340500 		sd	zero,8(a0)
+  31:src/KSemaphore.cpp ****     waitTail = nullptr;
+ 172              		.loc 1 31 5 is_stmt 1
+  31:src/KSemaphore.cpp ****     waitTail = nullptr;
+ 173              		.loc 1 31 14 is_stmt 0
+ 174 00e8 23380500 		sd	zero,16(a0)
+  32:src/KSemaphore.cpp **** }
+GAS LISTING /tmp/ccPaHA63.s 			page 9
+
+
+ 175              		.loc 1 32 1
+ 176 00ec 03348100 		ld	s0,8(sp)
+ 177              		.cfi_restore 8
+ 178              		.cfi_def_cfa 2, 16
+ 179 00f0 13010101 		addi	sp,sp,16
+ 180              		.cfi_def_cfa_offset 0
+ 181 00f4 67800000 		jr	ra
+ 182              		.cfi_endproc
+ 183              	.LFE4:
+ 185              		.align	2
+ 186              		.globl	_ZN10KSemaphore8allocateEj
+ 188              	_ZN10KSemaphore8allocateEj:
+ 189              	.LFB5:
+  35:src/KSemaphore.cpp **** {
+ 190              		.loc 1 35 1 is_stmt 1
+ 191              		.cfi_startproc
+ 192              	.LVL10:
+ 193 00f8 130101FE 		addi	sp,sp,-32
+ 194              		.cfi_def_cfa_offset 32
+ 195 00fc 233C1100 		sd	ra,24(sp)
+ 196 0100 23388100 		sd	s0,16(sp)
+ 197 0104 23349100 		sd	s1,8(sp)
+ 198 0108 23302101 		sd	s2,0(sp)
+ 199              		.cfi_offset 1, -8
+ 200              		.cfi_offset 8, -16
+ 201              		.cfi_offset 9, -24
+ 202              		.cfi_offset 18, -32
+ 203 010c 13040102 		addi	s0,sp,32
+ 204              		.cfi_def_cfa 8, 0
+  36:src/KSemaphore.cpp ****     if (usedBitmap == ~(uint64)0)
+ 205              		.loc 1 36 5
+  36:src/KSemaphore.cpp ****     if (usedBitmap == ~(uint64)0)
+ 206              		.loc 1 36 20 is_stmt 0
+ 207 0110 97040000 		ld	s1,.LANCHOR0+1536
+ 207      83B40400 
+  36:src/KSemaphore.cpp ****     if (usedBitmap == ~(uint64)0)
+ 208              		.loc 1 36 5
+ 209 0118 9307F0FF 		li	a5,-1
+ 210 011c 6384F406 		beq	s1,a5,.L19
+ 211 0120 13090500 		mv	s2,a0
+  41:src/KSemaphore.cpp ****     uint64 freeSlots = ~usedBitmap;
+ 212              		.loc 1 41 5 is_stmt 1
+ 213              	.LVL11:
+  42:src/KSemaphore.cpp ****     uint64 index = findFirstSetBit(freeSlots);
+ 214              		.loc 1 42 5
+  42:src/KSemaphore.cpp ****     uint64 index = findFirstSetBit(freeSlots);
+ 215              		.loc 1 42 35 is_stmt 0
+ 216 0124 13C5F4FF 		not	a0,s1
+ 217              	.LVL12:
+ 218 0128 97000000 		call	_ZL15findFirstSetBitm
+ 218      E7800000 
+ 219              	.LVL13:
+  44:src/KSemaphore.cpp ****     usedBitmap |= ((uint64)1 << index);
+ 220              		.loc 1 44 5 is_stmt 1
+  44:src/KSemaphore.cpp ****     usedBitmap |= ((uint64)1 << index);
+ 221              		.loc 1 44 30 is_stmt 0
+ 222 0130 13071000 		li	a4,1
+GAS LISTING /tmp/ccPaHA63.s 			page 10
+
+
+ 223 0134 3317A700 		sll	a4,a4,a0
+  44:src/KSemaphore.cpp ****     usedBitmap |= ((uint64)1 << index);
+ 224              		.loc 1 44 16
+ 225 0138 97070000 		lla	a5,.LANCHOR0
+ 225      93870700 
+ 226 0140 B3E4E400 		or	s1,s1,a4
+ 227              	.LVL14:
+ 228 0144 23B09760 		sd	s1,1536(a5)
+  46:src/KSemaphore.cpp ****     KSemaphore* semaphore =
+ 229              		.loc 1 46 5 is_stmt 1
+  46:src/KSemaphore.cpp ****     KSemaphore* semaphore =
+ 230              		.loc 1 46 17 is_stmt 0
+ 231 0148 93141500 		slli	s1,a0,1
+ 232 014c B384A400 		add	s1,s1,a0
+ 233 0150 93943400 		slli	s1,s1,3
+ 234 0154 B3849700 		add	s1,a5,s1
+ 235              	.LVL15:
+  49:src/KSemaphore.cpp ****     semaphore->reset(initialValue);
+ 236              		.loc 1 49 5 is_stmt 1
+  49:src/KSemaphore.cpp ****     semaphore->reset(initialValue);
+ 237              		.loc 1 49 21 is_stmt 0
+ 238 0158 93050900 		mv	a1,s2
+ 239 015c 13850400 		mv	a0,s1
+ 240              	.LVL16:
+ 241 0160 97000000 		call	_ZN10KSemaphore5resetEj
+ 241      E7800000 
+ 242              	.LVL17:
+  51:src/KSemaphore.cpp ****     return semaphore;
+ 243              		.loc 1 51 5 is_stmt 1
+ 244              	.L17:
+  52:src/KSemaphore.cpp **** }
+ 245              		.loc 1 52 1 is_stmt 0
+ 246 0168 13850400 		mv	a0,s1
+ 247 016c 83308101 		ld	ra,24(sp)
+ 248              		.cfi_remember_state
+ 249              		.cfi_restore 1
+ 250 0170 03340101 		ld	s0,16(sp)
+ 251              		.cfi_restore 8
+ 252              		.cfi_def_cfa 2, 32
+ 253 0174 83348100 		ld	s1,8(sp)
+ 254              		.cfi_restore 9
+ 255 0178 03390100 		ld	s2,0(sp)
+ 256              		.cfi_restore 18
+ 257 017c 13010102 		addi	sp,sp,32
+ 258              		.cfi_def_cfa_offset 0
+ 259 0180 67800000 		jr	ra
+ 260              	.LVL18:
+ 261              	.L19:
+ 262              		.cfi_restore_state
+  38:src/KSemaphore.cpp ****         return nullptr;
+ 263              		.loc 1 38 16
+ 264 0184 93040000 		li	s1,0
+ 265 0188 6FF01FFE 		j	.L17
+ 266              		.cfi_endproc
+ 267              	.LFE5:
+ 269              		.align	2
+ 270              		.globl	_ZN10KSemaphore7releaseEPS_
+GAS LISTING /tmp/ccPaHA63.s 			page 11
+
+
+ 272              	_ZN10KSemaphore7releaseEPS_:
+ 273              	.LFB6:
+  57:src/KSemaphore.cpp **** {
+ 274              		.loc 1 57 1 is_stmt 1
+ 275              		.cfi_startproc
+ 276              	.LVL19:
+ 277 018c 130101FF 		addi	sp,sp,-16
+ 278              		.cfi_def_cfa_offset 16
+ 279 0190 23348100 		sd	s0,8(sp)
+ 280              		.cfi_offset 8, -8
+ 281 0194 13040101 		addi	s0,sp,16
+ 282              		.cfi_def_cfa 8, 0
+  58:src/KSemaphore.cpp ****     if (semaphore == nullptr)
+ 283              		.loc 1 58 5
+ 284 0198 63040508 		beqz	a0,.L23
+  63:src/KSemaphore.cpp ****     if (semaphore < &semaphorePool[0] ||
+ 285              		.loc 1 63 5
+ 286 019c 97070000 		lla	a5,.LANCHOR0
+ 286      93870700 
+ 287 01a4 6362F508 		bltu	a0,a5,.L24
+  63:src/KSemaphore.cpp ****     if (semaphore < &semaphorePool[0] ||
+ 288              		.loc 1 63 39 is_stmt 0 discriminator 1
+ 289 01a8 97070000 		lla	a5,.LANCHOR0+1536
+ 289      93870700 
+ 290 01b0 6370F508 		bgeu	a0,a5,.L25
+  70:src/KSemaphore.cpp ****     uint64 index =
+ 291              		.loc 1 70 5 is_stmt 1
+  71:src/KSemaphore.cpp ****         (uint64)(semaphore - semaphorePool);
+ 292              		.loc 1 71 28 is_stmt 0
+ 293 01b4 97060000 		lla	a3,.LANCHOR0
+ 293      93860600 
+ 294 01bc B307D540 		sub	a5,a0,a3
+ 295 01c0 93D73740 		srai	a5,a5,3
+ 296              	.LVL20:
+  73:src/KSemaphore.cpp ****     uint64 bit =
+ 297              		.loc 1 73 5 is_stmt 1
+  74:src/KSemaphore.cpp ****         ((uint64)1 << index);
+ 298              		.loc 1 74 20 is_stmt 0
+ 299 01c4 17070000 		ld	a4,.LC0
+ 299      03370700 
+ 300 01cc 3B87E702 		mulw	a4,a5,a4
+  73:src/KSemaphore.cpp ****     uint64 bit =
+ 301              		.loc 1 73 12
+ 302 01d0 93071000 		li	a5,1
+ 303              	.LVL21:
+ 304 01d4 B397E700 		sll	a5,a5,a4
+ 305              	.LVL22:
+  76:src/KSemaphore.cpp ****     if ((usedBitmap & bit) == 0)
+ 306              		.loc 1 76 5 is_stmt 1
+  76:src/KSemaphore.cpp ****     if ((usedBitmap & bit) == 0)
+ 307              		.loc 1 76 21 is_stmt 0
+ 308 01d8 03B70660 		ld	a4,1536(a3)
+ 309 01dc 33F7E700 		and	a4,a5,a4
+  76:src/KSemaphore.cpp ****     if ((usedBitmap & bit) == 0)
+ 310              		.loc 1 76 5
+ 311 01e0 630C0704 		beqz	a4,.L26
+  85:src/KSemaphore.cpp ****     if (semaphore->waitHead != nullptr)
+GAS LISTING /tmp/ccPaHA63.s 			page 12
+
+
+ 312              		.loc 1 85 5 is_stmt 1
+  85:src/KSemaphore.cpp ****     if (semaphore->waitHead != nullptr)
+ 313              		.loc 1 85 20 is_stmt 0
+ 314 01e4 03378500 		ld	a4,8(a0)
+  85:src/KSemaphore.cpp ****     if (semaphore->waitHead != nullptr)
+ 315              		.loc 1 85 5
+ 316 01e8 631C0704 		bnez	a4,.L27
+  90:src/KSemaphore.cpp ****     semaphore->value = 0;
+ 317              		.loc 1 90 5 is_stmt 1
+  90:src/KSemaphore.cpp ****     semaphore->value = 0;
+ 318              		.loc 1 90 22 is_stmt 0
+ 319 01ec 23200500 		sw	zero,0(a0)
+  91:src/KSemaphore.cpp ****     semaphore->closed = true;
+ 320              		.loc 1 91 5 is_stmt 1
+  91:src/KSemaphore.cpp ****     semaphore->closed = true;
+ 321              		.loc 1 91 23 is_stmt 0
+ 322 01f0 13071000 		li	a4,1
+ 323 01f4 2302E500 		sb	a4,4(a0)
+  92:src/KSemaphore.cpp ****     semaphore->waitHead = nullptr;
+ 324              		.loc 1 92 5 is_stmt 1
+  92:src/KSemaphore.cpp ****     semaphore->waitHead = nullptr;
+ 325              		.loc 1 92 25 is_stmt 0
+ 326 01f8 23340500 		sd	zero,8(a0)
+  93:src/KSemaphore.cpp ****     semaphore->waitTail = nullptr;
+ 327              		.loc 1 93 5 is_stmt 1
+  93:src/KSemaphore.cpp ****     semaphore->waitTail = nullptr;
+ 328              		.loc 1 93 25 is_stmt 0
+ 329 01fc 23380500 		sd	zero,16(a0)
+  95:src/KSemaphore.cpp ****     usedBitmap &= ~bit;
+ 330              		.loc 1 95 5 is_stmt 1
+  95:src/KSemaphore.cpp ****     usedBitmap &= ~bit;
+ 331              		.loc 1 95 19 is_stmt 0
+ 332 0200 93C7F7FF 		not	a5,a5
+ 333              	.LVL23:
+  95:src/KSemaphore.cpp ****     usedBitmap &= ~bit;
+ 334              		.loc 1 95 16
+ 335 0204 03B70660 		ld	a4,1536(a3)
+ 336 0208 B377F700 		and	a5,a4,a5
+ 337              	.LVL24:
+ 338 020c 23B0F660 		sd	a5,1536(a3)
+  97:src/KSemaphore.cpp ****     return 0;
+ 339              		.loc 1 97 5 is_stmt 1
+  97:src/KSemaphore.cpp ****     return 0;
+ 340              		.loc 1 97 12 is_stmt 0
+ 341 0210 13050000 		li	a0,0
+ 342              	.LVL25:
+ 343              	.L22:
+  98:src/KSemaphore.cpp **** }
+ 344              		.loc 1 98 1
+ 345 0214 03348100 		ld	s0,8(sp)
+ 346              		.cfi_remember_state
+ 347              		.cfi_restore 8
+ 348              		.cfi_def_cfa 2, 16
+ 349 0218 13010101 		addi	sp,sp,16
+ 350              		.cfi_def_cfa_offset 0
+ 351 021c 67800000 		jr	ra
+ 352              	.LVL26:
+GAS LISTING /tmp/ccPaHA63.s 			page 13
+
+
+ 353              	.L23:
+ 354              		.cfi_restore_state
+  60:src/KSemaphore.cpp ****         return -1;
+ 355              		.loc 1 60 17
+ 356 0220 1305F0FF 		li	a0,-1
+ 357              	.LVL27:
+ 358 0224 6FF01FFF 		j	.L22
+ 359              	.LVL28:
+ 360              	.L24:
+  67:src/KSemaphore.cpp ****         return -2;
+ 361              		.loc 1 67 17
+ 362 0228 1305E0FF 		li	a0,-2
+ 363              	.LVL29:
+ 364 022c 6FF09FFE 		j	.L22
+ 365              	.LVL30:
+ 366              	.L25:
+ 367 0230 1305E0FF 		li	a0,-2
+ 368              	.LVL31:
+ 369 0234 6FF01FFE 		j	.L22
+ 370              	.LVL32:
+ 371              	.L26:
+  78:src/KSemaphore.cpp ****         return -3;
+ 372              		.loc 1 78 17
+ 373 0238 1305D0FF 		li	a0,-3
+ 374              	.LVL33:
+ 375 023c 6FF09FFD 		j	.L22
+ 376              	.LVL34:
+ 377              	.L27:
+  87:src/KSemaphore.cpp ****         return -4;
+ 378              		.loc 1 87 17
+ 379 0240 1305C0FF 		li	a0,-4
+ 380              	.LVL35:
+ 381 0244 6FF01FFD 		j	.L22
+ 382              		.cfi_endproc
+ 383              	.LFE6:
+ 385              		.align	2
+ 386              		.globl	_ZN10KSemaphore11isAllocatedEPKS_
+ 388              	_ZN10KSemaphore11isAllocatedEPKS_:
+ 389              	.LFB12:
+ 171:src/KSemaphore.cpp **** {
+ 390              		.loc 1 171 1 is_stmt 1
+ 391              		.cfi_startproc
+ 392              	.LVL36:
+ 393 0248 130101FF 		addi	sp,sp,-16
+ 394              		.cfi_def_cfa_offset 16
+ 395 024c 23348100 		sd	s0,8(sp)
+ 396              		.cfi_offset 8, -8
+ 397 0250 13040101 		addi	s0,sp,16
+ 398              		.cfi_def_cfa 8, 0
+ 172:src/KSemaphore.cpp ****     if (semaphore == nullptr)
+ 399              		.loc 1 172 5
+ 400 0254 630C0504 		beqz	a0,.L31
+ 177:src/KSemaphore.cpp ****     if (semaphore < &semaphorePool[0] ||semaphore >=&semaphorePool[MAX_SEMAPHORES])
+ 401              		.loc 1 177 5
+ 402 0258 97070000 		lla	a5,.LANCHOR0
+ 402      93870700 
+ 403 0260 636AF504 		bltu	a0,a5,.L32
+GAS LISTING /tmp/ccPaHA63.s 			page 14
+
+
+ 177:src/KSemaphore.cpp ****     if (semaphore < &semaphorePool[0] ||semaphore >=&semaphorePool[MAX_SEMAPHORES])
+ 404              		.loc 1 177 39 is_stmt 0 discriminator 1
+ 405 0264 97070000 		lla	a5,.LANCHOR0+1536
+ 405      93870700 
+ 406 026c 6378F504 		bgeu	a0,a5,.L33
+ 182:src/KSemaphore.cpp ****     uint64 index =
+ 407              		.loc 1 182 5 is_stmt 1
+ 183:src/KSemaphore.cpp ****         (uint64)(semaphore - semaphorePool);
+ 408              		.loc 1 183 28 is_stmt 0
+ 409 0270 17070000 		lla	a4,.LANCHOR0
+ 409      13070700 
+ 410 0278 3305E540 		sub	a0,a0,a4
+ 411              	.LVL37:
+ 412 027c 13553540 		srai	a0,a0,3
+ 413              	.LVL38:
+ 185:src/KSemaphore.cpp ****     uint64 bit =
+ 414              		.loc 1 185 5 is_stmt 1
+ 186:src/KSemaphore.cpp ****         ((uint64)1 << index);
+ 415              		.loc 1 186 20 is_stmt 0
+ 416 0280 97070000 		ld	a5,.LC0
+ 416      83B70700 
+ 417 0288 3B05F502 		mulw	a0,a0,a5
+ 418              	.LVL39:
+ 185:src/KSemaphore.cpp ****     uint64 bit =
+ 419              		.loc 1 185 12
+ 420 028c 93071000 		li	a5,1
+ 421 0290 3395A700 		sll	a0,a5,a0
+ 422              	.LVL40:
+ 188:src/KSemaphore.cpp ****     return (usedBitmap & bit) != 0;
+ 423              		.loc 1 188 5 is_stmt 1
+ 188:src/KSemaphore.cpp ****     return (usedBitmap & bit) != 0;
+ 424              		.loc 1 188 24 is_stmt 0
+ 425 0294 83370760 		ld	a5,1536(a4)
+ 426 0298 3375F500 		and	a0,a0,a5
+ 427              	.LVL41:
+ 188:src/KSemaphore.cpp ****     return (usedBitmap & bit) != 0;
+ 428              		.loc 1 188 34
+ 429 029c 3335A000 		snez	a0,a0
+ 430              	.LVL42:
+ 431              	.L30:
+ 189:src/KSemaphore.cpp **** }
+ 432              		.loc 1 189 1
+ 433 02a0 03348100 		ld	s0,8(sp)
+ 434              		.cfi_remember_state
+ 435              		.cfi_restore 8
+ 436              		.cfi_def_cfa 2, 16
+ 437 02a4 13010101 		addi	sp,sp,16
+ 438              		.cfi_def_cfa_offset 0
+ 439 02a8 67800000 		jr	ra
+ 440              	.LVL43:
+ 441              	.L31:
+ 442              		.cfi_restore_state
+ 174:src/KSemaphore.cpp ****         return false;
+ 443              		.loc 1 174 16
+ 444 02ac 13050000 		li	a0,0
+ 445              	.LVL44:
+ 446 02b0 6FF01FFF 		j	.L30
+GAS LISTING /tmp/ccPaHA63.s 			page 15
+
+
+ 447              	.LVL45:
+ 448              	.L32:
+ 179:src/KSemaphore.cpp ****         return false;
+ 449              		.loc 1 179 16
+ 450 02b4 13050000 		li	a0,0
+ 451              	.LVL46:
+ 452 02b8 6FF09FFE 		j	.L30
+ 453              	.LVL47:
+ 454              	.L33:
+ 455 02bc 13050000 		li	a0,0
+ 456              	.LVL48:
+ 457 02c0 6FF01FFE 		j	.L30
+ 458              		.cfi_endproc
+ 459              	.LFE12:
+ 461              		.align	2
+ 462              		.globl	_ZN10KSemaphore13getUsedBitmapEv
+ 464              	_ZN10KSemaphore13getUsedBitmapEv:
+ 465              	.LFB13:
+ 193:src/KSemaphore.cpp **** {
+ 466              		.loc 1 193 1 is_stmt 1
+ 467              		.cfi_startproc
+ 468 02c4 130101FF 		addi	sp,sp,-16
+ 469              		.cfi_def_cfa_offset 16
+ 470 02c8 23348100 		sd	s0,8(sp)
+ 471              		.cfi_offset 8, -8
+ 472 02cc 13040101 		addi	s0,sp,16
+ 473              		.cfi_def_cfa 8, 0
+ 194:src/KSemaphore.cpp ****     return usedBitmap;
+ 474              		.loc 1 194 5
+ 195:src/KSemaphore.cpp **** }
+ 475              		.loc 1 195 1 is_stmt 0
+ 476 02d0 17050000 		ld	a0,.LANCHOR0+1536
+ 476      03350500 
+ 477 02d8 03348100 		ld	s0,8(sp)
+ 478              		.cfi_restore 8
+ 479              		.cfi_def_cfa 2, 16
+ 480 02dc 13010101 		addi	sp,sp,16
+ 481              		.cfi_def_cfa_offset 0
+ 482 02e0 67800000 		jr	ra
+ 483              		.cfi_endproc
+ 484              	.LFE13:
+ 486              		.align	2
+ 487              		.globl	_ZN10KSemaphore17getAllocatedCountEv
+ 489              	_ZN10KSemaphore17getAllocatedCountEv:
+ 490              	.LFB14:
+ 198:src/KSemaphore.cpp **** {
+ 491              		.loc 1 198 1 is_stmt 1
+ 492              		.cfi_startproc
+ 493 02e4 130101FF 		addi	sp,sp,-16
+ 494              		.cfi_def_cfa_offset 16
+ 495 02e8 23348100 		sd	s0,8(sp)
+ 496              		.cfi_offset 8, -8
+ 497 02ec 13040101 		addi	s0,sp,16
+ 498              		.cfi_def_cfa 8, 0
+ 199:src/KSemaphore.cpp ****     uint64 count = 0;
+ 499              		.loc 1 199 5
+ 500              	.LVL49:
+GAS LISTING /tmp/ccPaHA63.s 			page 16
+
+
+ 200:src/KSemaphore.cpp ****     uint64 bitmap = usedBitmap;
+ 501              		.loc 1 200 5
+ 200:src/KSemaphore.cpp ****     uint64 bitmap = usedBitmap;
+ 502              		.loc 1 200 12 is_stmt 0
+ 503 02f0 97070000 		ld	a5,.LANCHOR0+1536
+ 503      83B70700 
+ 504              	.LVL50:
+ 199:src/KSemaphore.cpp ****     uint64 count = 0;
+ 505              		.loc 1 199 12
+ 506 02f8 13050000 		li	a0,0
+ 507              	.LVL51:
+ 508              	.L39:
+ 202:src/KSemaphore.cpp ****     while (bitmap != 0)
+ 509              		.loc 1 202 5 is_stmt 1
+ 202:src/KSemaphore.cpp ****     while (bitmap != 0)
+ 510              		.loc 1 202 19
+ 511 02fc 638A0700 		beqz	a5,.L37
+ 204:src/KSemaphore.cpp ****         bitmap &= bitmap - 1;
+ 512              		.loc 1 204 9
+ 204:src/KSemaphore.cpp ****         bitmap &= bitmap - 1;
+ 513              		.loc 1 204 26 is_stmt 0
+ 514 0300 1387F7FF 		addi	a4,a5,-1
+ 204:src/KSemaphore.cpp ****         bitmap &= bitmap - 1;
+ 515              		.loc 1 204 16
+ 516 0304 B3F7E700 		and	a5,a5,a4
+ 517              	.LVL52:
+ 205:src/KSemaphore.cpp ****         count++;
+ 518              		.loc 1 205 9 is_stmt 1
+ 205:src/KSemaphore.cpp ****         count++;
+ 519              		.loc 1 205 14 is_stmt 0
+ 520 0308 13051500 		addi	a0,a0,1
+ 521              	.LVL53:
+ 202:src/KSemaphore.cpp ****     while (bitmap != 0)
+ 522              		.loc 1 202 5
+ 523 030c 6FF01FFF 		j	.L39
+ 524              	.L37:
+ 209:src/KSemaphore.cpp **** }
+ 525              		.loc 1 209 1
+ 526 0310 03348100 		ld	s0,8(sp)
+ 527              		.cfi_restore 8
+ 528              		.cfi_def_cfa 2, 16
+ 529 0314 13010101 		addi	sp,sp,16
+ 530              		.cfi_def_cfa_offset 0
+ 531 0318 67800000 		jr	ra
+ 532              		.cfi_endproc
+ 533              	.LFE14:
+ 535              		.align	2
+ 536              		.globl	_ZNK10KSemaphore8getValueEv
+ 538              	_ZNK10KSemaphore8getValueEv:
+ 539              	.LFB15:
+ 213:src/KSemaphore.cpp **** {
+ 540              		.loc 1 213 1 is_stmt 1
+ 541              		.cfi_startproc
+ 542              	.LVL54:
+ 543 031c 130101FF 		addi	sp,sp,-16
+ 544              		.cfi_def_cfa_offset 16
+ 545 0320 23348100 		sd	s0,8(sp)
+GAS LISTING /tmp/ccPaHA63.s 			page 17
+
+
+ 546              		.cfi_offset 8, -8
+ 547 0324 13040101 		addi	s0,sp,16
+ 548              		.cfi_def_cfa 8, 0
+ 214:src/KSemaphore.cpp ****     return value;
+ 549              		.loc 1 214 5
+ 215:src/KSemaphore.cpp **** }
+ 550              		.loc 1 215 1 is_stmt 0
+ 551 0328 03250500 		lw	a0,0(a0)
+ 552              	.LVL55:
+ 553 032c 03348100 		ld	s0,8(sp)
+ 554              		.cfi_restore 8
+ 555              		.cfi_def_cfa 2, 16
+ 556 0330 13010101 		addi	sp,sp,16
+ 557              		.cfi_def_cfa_offset 0
+ 558 0334 67800000 		jr	ra
+ 559              		.cfi_endproc
+ 560              	.LFE15:
+ 562              		.align	2
+ 563              		.globl	_ZNK10KSemaphore8isClosedEv
+ 565              	_ZNK10KSemaphore8isClosedEv:
+ 566              	.LFB16:
+ 218:src/KSemaphore.cpp **** {
+ 567              		.loc 1 218 1 is_stmt 1
+ 568              		.cfi_startproc
+ 569              	.LVL56:
+ 570 0338 130101FF 		addi	sp,sp,-16
+ 571              		.cfi_def_cfa_offset 16
+ 572 033c 23348100 		sd	s0,8(sp)
+ 573              		.cfi_offset 8, -8
+ 574 0340 13040101 		addi	s0,sp,16
+ 575              		.cfi_def_cfa 8, 0
+ 219:src/KSemaphore.cpp ****     return closed;
+ 576              		.loc 1 219 5
+ 220:src/KSemaphore.cpp **** }
+ 577              		.loc 1 220 1 is_stmt 0
+ 578 0344 03454500 		lbu	a0,4(a0)
+ 579              	.LVL57:
+ 580 0348 03348100 		ld	s0,8(sp)
+ 581              		.cfi_restore 8
+ 582              		.cfi_def_cfa 2, 16
+ 583 034c 13010101 		addi	sp,sp,16
+ 584              		.cfi_def_cfa_offset 0
+ 585 0350 67800000 		jr	ra
+ 586              		.cfi_endproc
+ 587              	.LFE16:
+ 589              		.align	2
+ 590              		.globl	_ZNK10KSemaphore17hasWaitingThreadsEv
+ 592              	_ZNK10KSemaphore17hasWaitingThreadsEv:
+ 593              	.LFB17:
+ 223:src/KSemaphore.cpp **** {
+ 594              		.loc 1 223 1 is_stmt 1
+ 595              		.cfi_startproc
+ 596              	.LVL58:
+ 597 0354 130101FF 		addi	sp,sp,-16
+ 598              		.cfi_def_cfa_offset 16
+ 599 0358 23348100 		sd	s0,8(sp)
+ 600              		.cfi_offset 8, -8
+GAS LISTING /tmp/ccPaHA63.s 			page 18
+
+
+ 601 035c 13040101 		addi	s0,sp,16
+ 602              		.cfi_def_cfa 8, 0
+ 224:src/KSemaphore.cpp ****     return waitHead != nullptr;
+ 603              		.loc 1 224 5
+ 224:src/KSemaphore.cpp ****     return waitHead != nullptr;
+ 604              		.loc 1 224 12 is_stmt 0
+ 605 0360 03358500 		ld	a0,8(a0)
+ 606              	.LVL59:
+ 225:src/KSemaphore.cpp **** }
+ 607              		.loc 1 225 1
+ 608 0364 3335A000 		snez	a0,a0
+ 609 0368 03348100 		ld	s0,8(sp)
+ 610              		.cfi_restore 8
+ 611              		.cfi_def_cfa 2, 16
+ 612 036c 13010101 		addi	sp,sp,16
+ 613              		.cfi_def_cfa_offset 0
+ 614 0370 67800000 		jr	ra
+ 615              		.cfi_endproc
+ 616              	.LFE17:
+ 618              		.align	2
+ 619              		.globl	_ZN10KSemaphore12putWaitQueueEP7KThread
+ 621              	_ZN10KSemaphore12putWaitQueueEP7KThread:
+ 622              	.LFB18:
+ 229:src/KSemaphore.cpp **** {
+ 623              		.loc 1 229 1 is_stmt 1
+ 624              		.cfi_startproc
+ 625              	.LVL60:
+ 626 0374 130101FF 		addi	sp,sp,-16
+ 627              		.cfi_def_cfa_offset 16
+ 628 0378 23348100 		sd	s0,8(sp)
+ 629              		.cfi_offset 8, -8
+ 630 037c 13040101 		addi	s0,sp,16
+ 631              		.cfi_def_cfa 8, 0
+ 230:src/KSemaphore.cpp ****     if (thread == nullptr)
+ 632              		.loc 1 230 5
+ 633 0380 638C0500 		beqz	a1,.L47
+ 235:src/KSemaphore.cpp ****     thread->waitNext = nullptr;
+ 634              		.loc 1 235 5
+ 235:src/KSemaphore.cpp ****     thread->waitNext = nullptr;
+ 635              		.loc 1 235 22 is_stmt 0
+ 636 0384 23B40502 		sd	zero,40(a1)
+ 237:src/KSemaphore.cpp ****     if (waitTail == nullptr)
+ 637              		.loc 1 237 5 is_stmt 1
+ 237:src/KSemaphore.cpp ****     if (waitTail == nullptr)
+ 638              		.loc 1 237 9 is_stmt 0
+ 639 0388 83370501 		ld	a5,16(a0)
+ 237:src/KSemaphore.cpp ****     if (waitTail == nullptr)
+ 640              		.loc 1 237 5
+ 641 038c 638C0700 		beqz	a5,.L51
+ 244:src/KSemaphore.cpp ****     waitTail->waitNext = thread;
+ 642              		.loc 1 244 5 is_stmt 1
+ 244:src/KSemaphore.cpp ****     waitTail->waitNext = thread;
+ 643              		.loc 1 244 24 is_stmt 0
+ 644 0390 23B4B702 		sd	a1,40(a5)
+ 245:src/KSemaphore.cpp ****     waitTail = thread;
+ 645              		.loc 1 245 5 is_stmt 1
+ 245:src/KSemaphore.cpp ****     waitTail = thread;
+GAS LISTING /tmp/ccPaHA63.s 			page 19
+
+
+ 646              		.loc 1 245 14 is_stmt 0
+ 647 0394 2338B500 		sd	a1,16(a0)
+ 648              	.L47:
+ 246:src/KSemaphore.cpp **** }
+ 649              		.loc 1 246 1
+ 650 0398 03348100 		ld	s0,8(sp)
+ 651              		.cfi_remember_state
+ 652              		.cfi_restore 8
+ 653              		.cfi_def_cfa 2, 16
+ 654 039c 13010101 		addi	sp,sp,16
+ 655              		.cfi_def_cfa_offset 0
+ 656 03a0 67800000 		jr	ra
+ 657              	.L51:
+ 658              		.cfi_restore_state
+ 239:src/KSemaphore.cpp ****         waitHead = thread;
+ 659              		.loc 1 239 9 is_stmt 1
+ 239:src/KSemaphore.cpp ****         waitHead = thread;
+ 660              		.loc 1 239 18 is_stmt 0
+ 661 03a4 2334B500 		sd	a1,8(a0)
+ 240:src/KSemaphore.cpp ****         waitTail = thread;
+ 662              		.loc 1 240 9 is_stmt 1
+ 240:src/KSemaphore.cpp ****         waitTail = thread;
+ 663              		.loc 1 240 18 is_stmt 0
+ 664 03a8 2338B500 		sd	a1,16(a0)
+ 241:src/KSemaphore.cpp ****         return;
+ 665              		.loc 1 241 9 is_stmt 1
+ 666 03ac 6FF0DFFE 		j	.L47
+ 667              		.cfi_endproc
+ 668              	.LFE18:
+ 670              		.align	2
+ 671              		.globl	_ZN10KSemaphore5waitNEj
+ 673              	_ZN10KSemaphore5waitNEj:
+ 674              	.LFB7:
+ 101:src/KSemaphore.cpp **** {
+ 675              		.loc 1 101 1
+ 676              		.cfi_startproc
+ 677              	.LVL61:
+ 102:src/KSemaphore.cpp ****     if (closed) return -1;
+ 678              		.loc 1 102 5
+ 102:src/KSemaphore.cpp ****     if (closed) return -1;
+ 679              		.loc 1 102 9 is_stmt 0
+ 680 03b0 83474500 		lbu	a5,4(a0)
+ 102:src/KSemaphore.cpp ****     if (closed) return -1;
+ 681              		.loc 1 102 5
+ 682 03b4 639A0708 		bnez	a5,.L55
+ 103:src/KSemaphore.cpp ****     if (n==0) return 0;
+ 683              		.loc 1 103 5 is_stmt 1
+ 684 03b8 638C0508 		beqz	a1,.L56
+ 104:src/KSemaphore.cpp ****     if ((unsigned)value>=n)
+ 685              		.loc 1 104 5
+ 104:src/KSemaphore.cpp ****     if ((unsigned)value>=n)
+ 686              		.loc 1 104 19 is_stmt 0
+ 687 03bc 83270500 		lw	a5,0(a0)
+ 104:src/KSemaphore.cpp ****     if ((unsigned)value>=n)
+ 688              		.loc 1 104 9
+ 689 03c0 1B870700 		sext.w	a4,a5
+ 104:src/KSemaphore.cpp ****     if ((unsigned)value>=n)
+GAS LISTING /tmp/ccPaHA63.s 			page 20
+
+
+ 690              		.loc 1 104 5
+ 691 03c4 637AB706 		bgeu	a4,a1,.L62
+ 101:src/KSemaphore.cpp **** {
+ 692              		.loc 1 101 1
+ 693 03c8 130101FE 		addi	sp,sp,-32
+ 694              		.cfi_def_cfa_offset 32
+ 695 03cc 233C1100 		sd	ra,24(sp)
+ 696 03d0 23388100 		sd	s0,16(sp)
+ 697 03d4 23349100 		sd	s1,8(sp)
+ 698              		.cfi_offset 1, -8
+ 699              		.cfi_offset 8, -16
+ 700              		.cfi_offset 9, -24
+ 701 03d8 13040102 		addi	s0,sp,32
+ 702              		.cfi_def_cfa 8, 0
+ 109:src/KSemaphore.cpp ****     KThread* current = KThread::running;
+ 703              		.loc 1 109 5 is_stmt 1
+ 109:src/KSemaphore.cpp ****     KThread* current = KThread::running;
+ 704              		.loc 1 109 14 is_stmt 0
+ 705 03dc 97070000 		la	a5,_ZN7KThread7runningE
+ 705      83B70700 
+ 706 03e4 83B40700 		ld	s1,0(a5)
+ 707              	.LVL62:
+ 110:src/KSemaphore.cpp ****     if (current == nullptr || current->status != KThread::RUNNING) return -2;
+ 708              		.loc 1 110 5 is_stmt 1
+ 709 03e8 63880406 		beqz	s1,.L57
+ 110:src/KSemaphore.cpp ****     if (current == nullptr || current->status != KThread::RUNNING) return -2;
+ 710              		.loc 1 110 40 is_stmt 0 discriminator 2
+ 711 03ec 03A70402 		lw	a4,32(s1)
+ 110:src/KSemaphore.cpp ****     if (current == nullptr || current->status != KThread::RUNNING) return -2;
+ 712              		.loc 1 110 28 discriminator 2
+ 713 03f0 93071000 		li	a5,1
+ 714 03f4 6316F706 		bne	a4,a5,.L58
+ 111:src/KSemaphore.cpp ****     current->waitUnits = n;
+ 715              		.loc 1 111 5 is_stmt 1
+ 111:src/KSemaphore.cpp ****     current->waitUnits = n;
+ 716              		.loc 1 111 24 is_stmt 0
+ 717 03f8 23A8B402 		sw	a1,48(s1)
+ 112:src/KSemaphore.cpp ****     current->waitResult = 0;
+ 718              		.loc 1 112 5 is_stmt 1
+ 112:src/KSemaphore.cpp ****     current->waitResult = 0;
+ 719              		.loc 1 112 25 is_stmt 0
+ 720 03fc 23AA0402 		sw	zero,52(s1)
+ 113:src/KSemaphore.cpp ****     putWaitQueue(current);
+ 721              		.loc 1 113 5 is_stmt 1
+ 113:src/KSemaphore.cpp ****     putWaitQueue(current);
+ 722              		.loc 1 113 17 is_stmt 0
+ 723 0400 93850400 		mv	a1,s1
+ 724              	.LVL63:
+ 725 0404 97000000 		call	_ZN10KSemaphore12putWaitQueueEP7KThread
+ 725      E7800000 
+ 726              	.LVL64:
+ 114:src/KSemaphore.cpp ****     int result = KThread::block();
+ 727              		.loc 1 114 5 is_stmt 1
+ 114:src/KSemaphore.cpp ****     int result = KThread::block();
+ 728              		.loc 1 114 32 is_stmt 0
+ 729 040c 97000000 		call	_ZN7KThread5blockEv@plt
+ 729      E7800000 
+GAS LISTING /tmp/ccPaHA63.s 			page 21
+
+
+ 730              	.LVL65:
+ 115:src/KSemaphore.cpp ****     if (result<0) return result;
+ 731              		.loc 1 115 5 is_stmt 1
+ 732 0414 63480500 		bltz	a0,.L53
+ 116:src/KSemaphore.cpp ****     result = current->waitResult;
+ 733              		.loc 1 116 5
+ 116:src/KSemaphore.cpp ****     result = current->waitResult;
+ 734              		.loc 1 116 12 is_stmt 0
+ 735 0418 03A54403 		lw	a0,52(s1)
+ 736              	.LVL66:
+ 117:src/KSemaphore.cpp ****     current->waitUnits=0;
+ 737              		.loc 1 117 5 is_stmt 1
+ 117:src/KSemaphore.cpp ****     current->waitUnits=0;
+ 738              		.loc 1 117 23 is_stmt 0
+ 739 041c 23A80402 		sw	zero,48(s1)
+ 118:src/KSemaphore.cpp ****     current->waitResult= 0;
+ 740              		.loc 1 118 5 is_stmt 1
+ 118:src/KSemaphore.cpp ****     current->waitResult= 0;
+ 741              		.loc 1 118 24 is_stmt 0
+ 742 0420 23AA0402 		sw	zero,52(s1)
+ 119:src/KSemaphore.cpp ****     return result;
+ 743              		.loc 1 119 5 is_stmt 1
+ 744              	.LVL67:
+ 745              	.L53:
+ 120:src/KSemaphore.cpp **** }
+ 746              		.loc 1 120 1 is_stmt 0
+ 747 0424 83308101 		ld	ra,24(sp)
+ 748              		.cfi_restore 1
+ 749 0428 03340101 		ld	s0,16(sp)
+ 750              		.cfi_restore 8
+ 751              		.cfi_def_cfa 2, 32
+ 752 042c 83348100 		ld	s1,8(sp)
+ 753              		.cfi_restore 9
+ 754              	.LVL68:
+ 755 0430 13010102 		addi	sp,sp,32
+ 756              		.cfi_def_cfa_offset 0
+ 757 0434 67800000 		jr	ra
+ 758              	.LVL69:
+ 759              	.L62:
+ 106:src/KSemaphore.cpp ****         value-=(int)n;
+ 760              		.loc 1 106 9 is_stmt 1
+ 106:src/KSemaphore.cpp ****         value-=(int)n;
+ 761              		.loc 1 106 14 is_stmt 0
+ 762 0438 BB85B740 		subw	a1,a5,a1
+ 763              	.LVL70:
+ 764 043c 2320B500 		sw	a1,0(a0)
+ 107:src/KSemaphore.cpp ****         return 0;
+ 765              		.loc 1 107 9 is_stmt 1
+ 107:src/KSemaphore.cpp ****         return 0;
+ 766              		.loc 1 107 16 is_stmt 0
+ 767 0440 13050000 		li	a0,0
+ 768              	.LVL71:
+ 769 0444 67800000 		ret
+ 770              	.LVL72:
+ 771              	.L55:
+ 102:src/KSemaphore.cpp ****     if (closed) return -1;
+ 772              		.loc 1 102 25
+GAS LISTING /tmp/ccPaHA63.s 			page 22
+
+
+ 773 0448 1305F0FF 		li	a0,-1
+ 774              	.LVL73:
+ 775 044c 67800000 		ret
+ 776              	.LVL74:
+ 777              	.L56:
+ 103:src/KSemaphore.cpp ****     if (n==0) return 0;
+ 778              		.loc 1 103 22
+ 779 0450 13050000 		li	a0,0
+ 780              	.LVL75:
+ 120:src/KSemaphore.cpp **** }
+ 781              		.loc 1 120 1
+ 782 0454 67800000 		ret
+ 783              	.LVL76:
+ 784              	.L57:
+ 785              		.cfi_def_cfa_register 8
+ 786              		.cfi_offset 1, -8
+ 787              		.cfi_offset 8, -16
+ 788              		.cfi_offset 9, -24
+ 110:src/KSemaphore.cpp ****     if (current == nullptr || current->status != KThread::RUNNING) return -2;
+ 789              		.loc 1 110 76
+ 790 0458 1305E0FF 		li	a0,-2
+ 791              	.LVL77:
+ 792 045c 6FF09FFC 		j	.L53
+ 793              	.LVL78:
+ 794              	.L58:
+ 795 0460 1305E0FF 		li	a0,-2
+ 796              	.LVL79:
+ 797 0464 6FF01FFC 		j	.L53
+ 798              		.cfi_endproc
+ 799              	.LFE7:
+ 801              		.align	2
+ 802              		.globl	_ZN10KSemaphore4waitEv
+ 804              	_ZN10KSemaphore4waitEv:
+ 805              	.LFB9:
+ 145:src/KSemaphore.cpp **** {
+ 806              		.loc 1 145 1 is_stmt 1
+ 807              		.cfi_startproc
+ 808              	.LVL80:
+ 809 0468 130101FF 		addi	sp,sp,-16
+ 810              		.cfi_def_cfa_offset 16
+ 811 046c 23341100 		sd	ra,8(sp)
+ 812 0470 23308100 		sd	s0,0(sp)
+ 813              		.cfi_offset 1, -8
+ 814              		.cfi_offset 8, -16
+ 815 0474 13040101 		addi	s0,sp,16
+ 816              		.cfi_def_cfa 8, 0
+ 146:src/KSemaphore.cpp ****     return waitN(1);
+ 817              		.loc 1 146 5
+ 146:src/KSemaphore.cpp ****     return waitN(1);
+ 818              		.loc 1 146 17 is_stmt 0
+ 819 0478 93051000 		li	a1,1
+ 820 047c 97000000 		call	_ZN10KSemaphore5waitNEj
+ 820      E7800000 
+ 821              	.LVL81:
+ 147:src/KSemaphore.cpp **** }
+ 822              		.loc 1 147 1
+ 823 0484 83308100 		ld	ra,8(sp)
+GAS LISTING /tmp/ccPaHA63.s 			page 23
+
+
+ 824              		.cfi_restore 1
+ 825 0488 03340100 		ld	s0,0(sp)
+ 826              		.cfi_restore 8
+ 827              		.cfi_def_cfa 2, 16
+ 828 048c 13010101 		addi	sp,sp,16
+ 829              		.cfi_def_cfa_offset 0
+ 830 0490 67800000 		jr	ra
+ 831              		.cfi_endproc
+ 832              	.LFE9:
+ 834              		.align	2
+ 835              		.globl	_ZN10KSemaphore12getWaitQueueEv
+ 837              	_ZN10KSemaphore12getWaitQueueEv:
+ 838              	.LFB19:
+ 251:src/KSemaphore.cpp **** {
+ 839              		.loc 1 251 1 is_stmt 1
+ 840              		.cfi_startproc
+ 841              	.LVL82:
+ 842 0494 130101FF 		addi	sp,sp,-16
+ 843              		.cfi_def_cfa_offset 16
+ 844 0498 23348100 		sd	s0,8(sp)
+ 845              		.cfi_offset 8, -8
+ 846 049c 13040101 		addi	s0,sp,16
+ 847              		.cfi_def_cfa 8, 0
+ 848 04a0 93070500 		mv	a5,a0
+ 252:src/KSemaphore.cpp ****     if (waitHead == nullptr)
+ 849              		.loc 1 252 5
+ 252:src/KSemaphore.cpp ****     if (waitHead == nullptr)
+ 850              		.loc 1 252 9 is_stmt 0
+ 851 04a4 03358500 		ld	a0,8(a0)
+ 852              	.LVL83:
+ 252:src/KSemaphore.cpp ****     if (waitHead == nullptr)
+ 853              		.loc 1 252 5
+ 854 04a8 630A0500 		beqz	a0,.L65
+ 257:src/KSemaphore.cpp ****     KThread* thread = waitHead;
+ 855              		.loc 1 257 5 is_stmt 1
+ 856              	.LVL84:
+ 259:src/KSemaphore.cpp ****     waitHead = waitHead->waitNext;
+ 857              		.loc 1 259 5
+ 259:src/KSemaphore.cpp ****     waitHead = waitHead->waitNext;
+ 858              		.loc 1 259 26 is_stmt 0
+ 859 04ac 03378502 		ld	a4,40(a0)
+ 259:src/KSemaphore.cpp ****     waitHead = waitHead->waitNext;
+ 860              		.loc 1 259 14
+ 861 04b0 23B4E700 		sd	a4,8(a5)
+ 261:src/KSemaphore.cpp ****     if (waitHead == nullptr)
+ 862              		.loc 1 261 5 is_stmt 1
+ 863 04b4 630A0700 		beqz	a4,.L69
+ 864              	.L67:
+ 266:src/KSemaphore.cpp ****     thread->waitNext = nullptr;
+ 865              		.loc 1 266 5
+ 266:src/KSemaphore.cpp ****     thread->waitNext = nullptr;
+ 866              		.loc 1 266 22 is_stmt 0
+ 867 04b8 23340502 		sd	zero,40(a0)
+ 268:src/KSemaphore.cpp ****     return thread;
+ 868              		.loc 1 268 5 is_stmt 1
+ 869              	.LVL85:
+ 870              	.L65:
+GAS LISTING /tmp/ccPaHA63.s 			page 24
+
+
+ 871              		.loc 1 269 1 is_stmt 0
+ 872 04bc 03348100 		ld	s0,8(sp)
+ 873              		.cfi_remember_state
+ 874              		.cfi_restore 8
+ 875              		.cfi_def_cfa 2, 16
+ 876 04c0 13010101 		addi	sp,sp,16
+ 877              		.cfi_def_cfa_offset 0
+ 878 04c4 67800000 		jr	ra
+ 879              	.LVL86:
+ 880              	.L69:
+ 881              		.cfi_restore_state
+ 263:src/KSemaphore.cpp ****         waitTail = nullptr;
+ 882              		.loc 1 263 9 is_stmt 1
+ 263:src/KSemaphore.cpp ****         waitTail = nullptr;
+ 883              		.loc 1 263 18 is_stmt 0
+ 884 04c8 23B80700 		sd	zero,16(a5)
+ 885 04cc 6FF0DFFE 		j	.L67
+ 886              		.cfi_endproc
+ 887              	.LFE19:
+ 889              		.align	2
+ 890              		.globl	_ZN10KSemaphore7signalNEj
+ 892              	_ZN10KSemaphore7signalNEj:
+ 893              	.LFB8:
+ 123:src/KSemaphore.cpp **** {
+ 894              		.loc 1 123 1 is_stmt 1
+ 895              		.cfi_startproc
+ 896              	.LVL87:
+ 124:src/KSemaphore.cpp ****     if (closed) return -1;
+ 897              		.loc 1 124 5
+ 124:src/KSemaphore.cpp ****     if (closed) return -1;
+ 898              		.loc 1 124 9 is_stmt 0
+ 899 04d0 83474500 		lbu	a5,4(a0)
+ 124:src/KSemaphore.cpp ****     if (closed) return -1;
+ 900              		.loc 1 124 5
+ 901 04d4 63980706 		bnez	a5,.L73
+ 123:src/KSemaphore.cpp **** {
+ 902              		.loc 1 123 1
+ 903 04d8 130101FE 		addi	sp,sp,-32
+ 904              		.cfi_def_cfa_offset 32
+ 905 04dc 233C1100 		sd	ra,24(sp)
+ 906 04e0 23388100 		sd	s0,16(sp)
+ 907 04e4 23349100 		sd	s1,8(sp)
+ 908              		.cfi_offset 1, -8
+ 909              		.cfi_offset 8, -16
+ 910              		.cfi_offset 9, -24
+ 911 04e8 13040102 		addi	s0,sp,32
+ 912              		.cfi_def_cfa 8, 0
+ 913 04ec 93040500 		mv	s1,a0
+ 125:src/KSemaphore.cpp ****     if (n==0) return 0;
+ 914              		.loc 1 125 5 is_stmt 1
+ 915 04f0 638E0504 		beqz	a1,.L74
+ 127:src/KSemaphore.cpp ****     value+=(int)n;
+ 916              		.loc 1 127 5
+ 127:src/KSemaphore.cpp ****     value+=(int)n;
+ 917              		.loc 1 127 10 is_stmt 0
+ 918 04f4 83270500 		lw	a5,0(a0)
+ 919 04f8 BB85B700 		addw	a1,a5,a1
+GAS LISTING /tmp/ccPaHA63.s 			page 25
+
+
+ 920              	.LVL88:
+ 921 04fc 2320B500 		sw	a1,0(a0)
+ 922              	.LVL89:
+ 923              	.L72:
+ 128:src/KSemaphore.cpp ****     while (waitHead!=nullptr)
+ 924              		.loc 1 128 5 is_stmt 1
+ 128:src/KSemaphore.cpp ****     while (waitHead!=nullptr)
+ 925              		.loc 1 128 20
+ 128:src/KSemaphore.cpp ****     while (waitHead!=nullptr)
+ 926              		.loc 1 128 12 is_stmt 0
+ 927 0500 83B78400 		ld	a5,8(s1)
+ 128:src/KSemaphore.cpp ****     while (waitHead!=nullptr)
+ 928              		.loc 1 128 20
+ 929 0504 63800706 		beqz	a5,.L75
+ 930              	.LBB3:
+ 130:src/KSemaphore.cpp ****         KThread* thread=waitHead;
+ 931              		.loc 1 130 9 is_stmt 1
+ 932              	.LVL90:
+ 131:src/KSemaphore.cpp ****         if (thread->waitUnits>(unsigned)value)
+ 933              		.loc 1 131 9
+ 131:src/KSemaphore.cpp ****         if (thread->waitUnits>(unsigned)value)
+ 934              		.loc 1 131 21 is_stmt 0
+ 935 0508 03A70703 		lw	a4,48(a5)
+ 131:src/KSemaphore.cpp ****         if (thread->waitUnits>(unsigned)value)
+ 936              		.loc 1 131 41
+ 937 050c 83A70400 		lw	a5,0(s1)
+ 938              	.LVL91:
+ 131:src/KSemaphore.cpp ****         if (thread->waitUnits>(unsigned)value)
+ 939              		.loc 1 131 31
+ 940 0510 9B860700 		sext.w	a3,a5
+ 131:src/KSemaphore.cpp ****         if (thread->waitUnits>(unsigned)value)
+ 941              		.loc 1 131 9
+ 942 0514 63ECE604 		bgtu	a4,a3,.L76
+ 135:src/KSemaphore.cpp ****         value-=(int)thread->waitUnits;
+ 943              		.loc 1 135 9 is_stmt 1
+ 135:src/KSemaphore.cpp ****         value-=(int)thread->waitUnits;
+ 944              		.loc 1 135 14 is_stmt 0
+ 945 0518 BB87E740 		subw	a5,a5,a4
+ 946 051c 23A0F400 		sw	a5,0(s1)
+ 136:src/KSemaphore.cpp ****         thread = getWaitQueue();
+ 947              		.loc 1 136 9 is_stmt 1
+ 136:src/KSemaphore.cpp ****         thread = getWaitQueue();
+ 948              		.loc 1 136 30 is_stmt 0
+ 949 0520 13850400 		mv	a0,s1
+ 950 0524 97000000 		call	_ZN10KSemaphore12getWaitQueueEv
+ 950      E7800000 
+ 951              	.LVL92:
+ 137:src/KSemaphore.cpp ****         thread->waitResult = 0;
+ 952              		.loc 1 137 9 is_stmt 1
+ 137:src/KSemaphore.cpp ****         thread->waitResult = 0;
+ 953              		.loc 1 137 28 is_stmt 0
+ 954 052c 232A0502 		sw	zero,52(a0)
+ 138:src/KSemaphore.cpp ****         int result = KThread::unblock(thread);
+ 955              		.loc 1 138 9 is_stmt 1
+ 138:src/KSemaphore.cpp ****         int result = KThread::unblock(thread);
+ 956              		.loc 1 138 38 is_stmt 0
+ 957 0530 97000000 		call	_ZN7KThread7unblockEPS_@plt
+GAS LISTING /tmp/ccPaHA63.s 			page 26
+
+
+ 957      E7800000 
+ 958              	.LVL93:
+ 139:src/KSemaphore.cpp ****         if (result<0) return -3;
+ 959              		.loc 1 139 9 is_stmt 1
+ 960 0538 E35405FC 		bgez	a0,.L72
+ 139:src/KSemaphore.cpp ****         if (result<0) return -3;
+ 961              		.loc 1 139 31 is_stmt 0
+ 962 053c 1305D0FF 		li	a0,-3
+ 963              	.LVL94:
+ 964 0540 6F000001 		j	.L71
+ 965              	.LVL95:
+ 966              	.L73:
+ 967              		.cfi_def_cfa_register 2
+ 968              		.cfi_restore 1
+ 969              		.cfi_restore 8
+ 970              		.cfi_restore 9
+ 971              	.LBE3:
+ 124:src/KSemaphore.cpp ****     if (closed) return -1;
+ 972              		.loc 1 124 25
+ 973 0544 1305F0FF 		li	a0,-1
+ 974              	.LVL96:
+ 142:src/KSemaphore.cpp **** }
+ 975              		.loc 1 142 1
+ 976 0548 67800000 		ret
+ 977              	.LVL97:
+ 978              	.L74:
+ 979              		.cfi_def_cfa_register 8
+ 980              		.cfi_offset 1, -8
+ 981              		.cfi_offset 8, -16
+ 982              		.cfi_offset 9, -24
+ 125:src/KSemaphore.cpp ****     if (n==0) return 0;
+ 983              		.loc 1 125 22
+ 984 054c 13050000 		li	a0,0
+ 985              	.LVL98:
+ 986              	.L71:
+ 142:src/KSemaphore.cpp **** }
+ 987              		.loc 1 142 1
+ 988 0550 83308101 		ld	ra,24(sp)
+ 989              		.cfi_remember_state
+ 990              		.cfi_restore 1
+ 991 0554 03340101 		ld	s0,16(sp)
+ 992              		.cfi_restore 8
+ 993              		.cfi_def_cfa 2, 32
+ 994 0558 83348100 		ld	s1,8(sp)
+ 995              		.cfi_restore 9
+ 996              	.LVL99:
+ 997 055c 13010102 		addi	sp,sp,32
+ 998              		.cfi_def_cfa_offset 0
+ 999 0560 67800000 		jr	ra
+ 1000              	.LVL100:
+ 1001              	.L75:
+ 1002              		.cfi_restore_state
+ 141:src/KSemaphore.cpp ****     return 0;
+ 1003              		.loc 1 141 12
+ 1004 0564 13050000 		li	a0,0
+ 1005 0568 6FF09FFE 		j	.L71
+ 1006              	.LVL101:
+GAS LISTING /tmp/ccPaHA63.s 			page 27
+
+
+ 1007              	.L76:
+ 1008 056c 13050000 		li	a0,0
+ 1009 0570 6FF01FFE 		j	.L71
+ 1010              		.cfi_endproc
+ 1011              	.LFE8:
+ 1013              		.align	2
+ 1014              		.globl	_ZN10KSemaphore6signalEv
+ 1016              	_ZN10KSemaphore6signalEv:
+ 1017              	.LFB10:
+ 150:src/KSemaphore.cpp **** {
+ 1018              		.loc 1 150 1 is_stmt 1
+ 1019              		.cfi_startproc
+ 1020              	.LVL102:
+ 1021 0574 130101FF 		addi	sp,sp,-16
+ 1022              		.cfi_def_cfa_offset 16
+ 1023 0578 23341100 		sd	ra,8(sp)
+ 1024 057c 23308100 		sd	s0,0(sp)
+ 1025              		.cfi_offset 1, -8
+ 1026              		.cfi_offset 8, -16
+ 1027 0580 13040101 		addi	s0,sp,16
+ 1028              		.cfi_def_cfa 8, 0
+ 151:src/KSemaphore.cpp ****     return signalN(1);
+ 1029              		.loc 1 151 5
+ 151:src/KSemaphore.cpp ****     return signalN(1);
+ 1030              		.loc 1 151 19 is_stmt 0
+ 1031 0584 93051000 		li	a1,1
+ 1032 0588 97000000 		call	_ZN10KSemaphore7signalNEj
+ 1032      E7800000 
+ 1033              	.LVL103:
+ 152:src/KSemaphore.cpp **** }
+ 1034              		.loc 1 152 1
+ 1035 0590 83308100 		ld	ra,8(sp)
+ 1036              		.cfi_restore 1
+ 1037 0594 03340100 		ld	s0,0(sp)
+ 1038              		.cfi_restore 8
+ 1039              		.cfi_def_cfa 2, 16
+ 1040 0598 13010101 		addi	sp,sp,16
+ 1041              		.cfi_def_cfa_offset 0
+ 1042 059c 67800000 		jr	ra
+ 1043              		.cfi_endproc
+ 1044              	.LFE10:
+ 1046              		.align	2
+ 1047              		.globl	_ZN10KSemaphore5closeEv
+ 1049              	_ZN10KSemaphore5closeEv:
+ 1050              	.LFB11:
+ 155:src/KSemaphore.cpp **** {
+ 1051              		.loc 1 155 1 is_stmt 1
+ 1052              		.cfi_startproc
+ 1053              	.LVL104:
+ 156:src/KSemaphore.cpp ****     if (closed) return -1;
+ 1054              		.loc 1 156 5
+ 156:src/KSemaphore.cpp ****     if (closed) return -1;
+ 1055              		.loc 1 156 9 is_stmt 0
+ 1056 05a0 83474500 		lbu	a5,4(a0)
+ 156:src/KSemaphore.cpp ****     if (closed) return -1;
+ 1057              		.loc 1 156 5
+ 1058 05a4 639E0704 		bnez	a5,.L86
+GAS LISTING /tmp/ccPaHA63.s 			page 28
+
+
+ 155:src/KSemaphore.cpp **** {
+ 1059              		.loc 1 155 1
+ 1060 05a8 130101FE 		addi	sp,sp,-32
+ 1061              		.cfi_def_cfa_offset 32
+ 1062 05ac 233C1100 		sd	ra,24(sp)
+ 1063 05b0 23388100 		sd	s0,16(sp)
+ 1064 05b4 23349100 		sd	s1,8(sp)
+ 1065              		.cfi_offset 1, -8
+ 1066              		.cfi_offset 8, -16
+ 1067              		.cfi_offset 9, -24
+ 1068 05b8 13040102 		addi	s0,sp,32
+ 1069              		.cfi_def_cfa 8, 0
+ 1070 05bc 93040500 		mv	s1,a0
+ 157:src/KSemaphore.cpp ****     closed = true;
+ 1071              		.loc 1 157 5 is_stmt 1
+ 157:src/KSemaphore.cpp ****     closed = true;
+ 1072              		.loc 1 157 12 is_stmt 0
+ 1073 05c0 93071000 		li	a5,1
+ 1074 05c4 2302F500 		sb	a5,4(a0)
+ 158:src/KSemaphore.cpp ****     value=0;
+ 1075              		.loc 1 158 5 is_stmt 1
+ 158:src/KSemaphore.cpp ****     value=0;
+ 1076              		.loc 1 158 10 is_stmt 0
+ 1077 05c8 23200500 		sw	zero,0(a0)
+ 1078              	.LVL105:
+ 1079              	.L85:
+ 159:src/KSemaphore.cpp ****     while (waitHead != nullptr)
+ 1080              		.loc 1 159 5 is_stmt 1
+ 159:src/KSemaphore.cpp ****     while (waitHead != nullptr)
+ 1081              		.loc 1 159 21
+ 159:src/KSemaphore.cpp ****     while (waitHead != nullptr)
+ 1082              		.loc 1 159 12 is_stmt 0
+ 1083 05cc 83B78400 		ld	a5,8(s1)
+ 159:src/KSemaphore.cpp ****     while (waitHead != nullptr)
+ 1084              		.loc 1 159 21
+ 1085 05d0 638C0702 		beqz	a5,.L87
+ 1086              	.LBB4:
+ 161:src/KSemaphore.cpp ****         KThread* thread = getWaitQueue();
+ 1087              		.loc 1 161 9 is_stmt 1
+ 161:src/KSemaphore.cpp ****         KThread* thread = getWaitQueue();
+ 1088              		.loc 1 161 39 is_stmt 0
+ 1089 05d4 13850400 		mv	a0,s1
+ 1090 05d8 97000000 		call	_ZN10KSemaphore12getWaitQueueEv
+ 1090      E7800000 
+ 1091              	.LVL106:
+ 162:src/KSemaphore.cpp ****         thread->waitResult=-1;
+ 1092              		.loc 1 162 9 is_stmt 1
+ 162:src/KSemaphore.cpp ****         thread->waitResult=-1;
+ 1093              		.loc 1 162 27 is_stmt 0
+ 1094 05e0 1307F0FF 		li	a4,-1
+ 1095 05e4 232AE502 		sw	a4,52(a0)
+ 163:src/KSemaphore.cpp ****         thread->waitUnits=0;
+ 1096              		.loc 1 163 9 is_stmt 1
+ 163:src/KSemaphore.cpp ****         thread->waitUnits=0;
+ 1097              		.loc 1 163 26 is_stmt 0
+ 1098 05e8 23280502 		sw	zero,48(a0)
+ 164:src/KSemaphore.cpp ****         int result = KThread::unblock(thread);
+GAS LISTING /tmp/ccPaHA63.s 			page 29
+
+
+ 1099              		.loc 1 164 9 is_stmt 1
+ 164:src/KSemaphore.cpp ****         int result = KThread::unblock(thread);
+ 1100              		.loc 1 164 38 is_stmt 0
+ 1101 05ec 97000000 		call	_ZN7KThread7unblockEPS_@plt
+ 1101      E7800000 
+ 1102              	.LVL107:
+ 165:src/KSemaphore.cpp ****         if (result<0) return -2;
+ 1103              		.loc 1 165 9 is_stmt 1
+ 1104 05f4 E35C05FC 		bgez	a0,.L85
+ 165:src/KSemaphore.cpp ****         if (result<0) return -2;
+ 1105              		.loc 1 165 31 is_stmt 0
+ 1106 05f8 1305E0FF 		li	a0,-2
+ 1107              	.LVL108:
+ 1108 05fc 6F000001 		j	.L84
+ 1109              	.LVL109:
+ 1110              	.L86:
+ 1111              		.cfi_def_cfa_register 2
+ 1112              		.cfi_restore 1
+ 1113              		.cfi_restore 8
+ 1114              		.cfi_restore 9
+ 1115              	.LBE4:
+ 156:src/KSemaphore.cpp ****     if (closed) return -1;
+ 1116              		.loc 1 156 25
+ 1117 0600 1305F0FF 		li	a0,-1
+ 1118              	.LVL110:
+ 168:src/KSemaphore.cpp **** }
+ 1119              		.loc 1 168 1
+ 1120 0604 67800000 		ret
+ 1121              	.LVL111:
+ 1122              	.L87:
+ 1123              		.cfi_def_cfa_register 8
+ 1124              		.cfi_offset 1, -8
+ 1125              		.cfi_offset 8, -16
+ 1126              		.cfi_offset 9, -24
+ 167:src/KSemaphore.cpp ****     return 0;
+ 1127              		.loc 1 167 12
+ 1128 0608 13050000 		li	a0,0
+ 1129              	.L84:
+ 168:src/KSemaphore.cpp **** }
+ 1130              		.loc 1 168 1
+ 1131 060c 83308101 		ld	ra,24(sp)
+ 1132              		.cfi_restore 1
+ 1133 0610 03340101 		ld	s0,16(sp)
+ 1134              		.cfi_restore 8
+ 1135              		.cfi_def_cfa 2, 32
+ 1136 0614 83348100 		ld	s1,8(sp)
+ 1137              		.cfi_restore 9
+ 1138              	.LVL112:
+ 1139 0618 13010102 		addi	sp,sp,32
+ 1140              		.cfi_def_cfa_offset 0
+ 1141 061c 67800000 		jr	ra
+ 1142              		.cfi_endproc
+ 1143              	.LFE11:
+ 1145              		.align	2
+ 1147              	_GLOBAL__sub_I__ZN10KSemaphore13semaphorePoolE:
+ 1148              	.LFB21:
+ 1149              		.loc 1 269 1 is_stmt 1
+GAS LISTING /tmp/ccPaHA63.s 			page 30
+
+
+ 1150              		.cfi_startproc
+ 1151 0620 130101FF 		addi	sp,sp,-16
+ 1152              		.cfi_def_cfa_offset 16
+ 1153 0624 23341100 		sd	ra,8(sp)
+ 1154 0628 23308100 		sd	s0,0(sp)
+ 1155              		.cfi_offset 1, -8
+ 1156              		.cfi_offset 8, -16
+ 1157 062c 13040101 		addi	s0,sp,16
+ 1158              		.cfi_def_cfa 8, 0
+ 1159              		.loc 1 269 1 is_stmt 0
+ 1160 0630 B7050100 		li	a1,65536
+ 1161 0634 9385F5FF 		addi	a1,a1,-1
+ 1162 0638 13051000 		li	a0,1
+ 1163 063c 97000000 		call	_Z41__static_initialization_and_destruction_0ii
+ 1163      E7800000 
+ 1164              	.LVL113:
+ 1165 0644 83308100 		ld	ra,8(sp)
+ 1166              		.cfi_restore 1
+ 1167 0648 03340100 		ld	s0,0(sp)
+ 1168              		.cfi_restore 8
+ 1169              		.cfi_def_cfa 2, 16
+ 1170 064c 13010101 		addi	sp,sp,16
+ 1171              		.cfi_def_cfa_offset 0
+ 1172 0650 67800000 		jr	ra
+ 1173              		.cfi_endproc
+ 1174              	.LFE21:
+ 1176              		.section	.init_array,"aw"
+ 1177              		.align	3
+ 1178 0000 00000000 		.dword	_GLOBAL__sub_I__ZN10KSemaphore13semaphorePoolE
+ 1178      00000000 
+ 1179              		.globl	_ZN10KSemaphore10usedBitmapE
+ 1180              		.globl	_ZN10KSemaphore13semaphorePoolE
+ 1181              		.section	.rodata.cst8,"aM",@progbits,8
+ 1182              		.align	3
+ 1183              	.LC0:
+ 1184 0000 ABAAAAAA 		.dword	-6148914691236517205
+ 1184      AAAAAAAA 
+ 1185              		.bss
+ 1186              		.align	4
+ 1187              		.set	.LANCHOR0,. + 0
+ 1190              	_ZN10KSemaphore13semaphorePoolE:
+ 1191 0000 00000000 		.zero	1536
+ 1191      00000000 
+ 1191      00000000 
+ 1191      00000000 
+ 1191      00000000 
+ 1194              	_ZN10KSemaphore10usedBitmapE:
+ 1195 0600 00000000 		.zero	8
+ 1195      00000000 
+ 1196              		.text
+ 1197              	.Letext0:
+ 1198              		.file 2 "src/../h/../lib/hw.h"
+ 1199              		.file 3 "src/../h/KThread.h"
+ 1200              		.file 4 "src/../h/KSemaphore.h"
+GAS LISTING /tmp/ccPaHA63.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 KSemaphore.cpp
+     /tmp/ccPaHA63.s:8      .text:0000000000000000 _ZL15findFirstSetBitm
+     /tmp/ccPaHA63.s:12     .text:0000000000000000 .L0 
+     /tmp/ccPaHA63.s:14     .text:0000000000000000 .L0 
+     /tmp/ccPaHA63.s:15     .text:0000000000000004 .L0 
+     /tmp/ccPaHA63.s:17     .text:0000000000000008 .L0 
+     /tmp/ccPaHA63.s:19     .text:000000000000000c .L0 
+     /tmp/ccPaHA63.s:23     .text:0000000000000010 .L0 
+     /tmp/ccPaHA63.s:24     .text:0000000000000010 .L0 
+     /tmp/ccPaHA63.s:28     .text:0000000000000014 .L0 
+     /tmp/ccPaHA63.s:29     .text:0000000000000014 .L0 
+     /tmp/ccPaHA63.s:30     .text:0000000000000014 .L0 
+     /tmp/ccPaHA63.s:32     .text:0000000000000018 .L0 
+     /tmp/ccPaHA63.s:34     .text:000000000000001c .L0 
+     /tmp/ccPaHA63.s:35     .text:000000000000001c .L0 
+     /tmp/ccPaHA63.s:38     .text:0000000000000020 .L0 
+     /tmp/ccPaHA63.s:39     .text:0000000000000020 .L0 
+     /tmp/ccPaHA63.s:42     .text:0000000000000024 .L0 
+     /tmp/ccPaHA63.s:45     .text:0000000000000028 .L0 
+     /tmp/ccPaHA63.s:46     .text:000000000000002c .L0 
+     /tmp/ccPaHA63.s:47     .text:000000000000002c .L0 
+     /tmp/ccPaHA63.s:49     .text:0000000000000030 .L0 
+     /tmp/ccPaHA63.s:51     .text:0000000000000034 .L0 
+     /tmp/ccPaHA63.s:57     .text:0000000000000034 _ZN10KSemaphoreC2Ev
+     /tmp/ccPaHA63.s:60     .text:0000000000000034 .L0 
+     /tmp/ccPaHA63.s:62     .text:0000000000000034 .L0 
+     /tmp/ccPaHA63.s:63     .text:0000000000000038 .L0 
+     /tmp/ccPaHA63.s:65     .text:000000000000003c .L0 
+     /tmp/ccPaHA63.s:67     .text:0000000000000040 .L0 
+     /tmp/ccPaHA63.s:70     .text:0000000000000040 .L0 
+     /tmp/ccPaHA63.s:77     .text:0000000000000054 .L0 
+     /tmp/ccPaHA63.s:78     .text:0000000000000058 .L0 
+     /tmp/ccPaHA63.s:79     .text:0000000000000058 .L0 
+     /tmp/ccPaHA63.s:81     .text:000000000000005c .L0 
+     /tmp/ccPaHA63.s:83     .text:0000000000000060 .L0 
+     /tmp/ccPaHA63.s:57     .text:0000000000000034 _ZN10KSemaphoreC1Ev
+     /tmp/ccPaHA63.s:90     .text:0000000000000060 _Z41__static_initialization_and_destruction_0ii
+     /tmp/ccPaHA63.s:93     .text:0000000000000060 .L0 
+     /tmp/ccPaHA63.s:95     .text:0000000000000060 .L0 
+     /tmp/ccPaHA63.s:101    .text:000000000000006c .L0 
+     /tmp/ccPaHA63.s:105    .text:0000000000000078 .L0 
+     /tmp/ccPaHA63.s:106    .text:000000000000007c .L0 
+     /tmp/ccPaHA63.s:111    .text:000000000000008c .L0 
+     /tmp/ccPaHA63.s:112    .text:000000000000008c .L0 
+     /tmp/ccPaHA63.s:113    .text:000000000000008c .L0 
+     /tmp/ccPaHA63.s:114    .text:000000000000008c .L0 
+     /tmp/ccPaHA63.s:116    .text:0000000000000090 .L0 
+     /tmp/ccPaHA63.s:118    .text:0000000000000090 .L0 
+     /tmp/ccPaHA63.s:123    .text:000000000000009c .L0 
+     /tmp/ccPaHA63.s:125    .text:00000000000000a0 .L0 
+     /tmp/ccPaHA63.s:130    .text:00000000000000b0 .L0 
+     /tmp/ccPaHA63.s:134    .text:00000000000000b8 .L0 
+     /tmp/ccPaHA63.s:135    .text:00000000000000bc .L0 
+     /tmp/ccPaHA63.s:137    .text:00000000000000c0 .L0 
+     /tmp/ccPaHA63.s:138    .text:00000000000000c0 .L0 
+     /tmp/ccPaHA63.s:140    .text:00000000000000c4 .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 32
+
+
+     /tmp/ccPaHA63.s:142    .text:00000000000000c8 .L0 
+     /tmp/ccPaHA63.s:144    .text:00000000000000cc .L0 
+     /tmp/ccPaHA63.s:146    .text:00000000000000d0 .L0 
+     /tmp/ccPaHA63.s:152    .text:00000000000000d0 _ZN10KSemaphore5resetEj
+     /tmp/ccPaHA63.s:155    .text:00000000000000d0 .L0 
+     /tmp/ccPaHA63.s:157    .text:00000000000000d0 .L0 
+     /tmp/ccPaHA63.s:158    .text:00000000000000d4 .L0 
+     /tmp/ccPaHA63.s:160    .text:00000000000000d8 .L0 
+     /tmp/ccPaHA63.s:162    .text:00000000000000dc .L0 
+     /tmp/ccPaHA63.s:164    .text:00000000000000dc .L0 
+     /tmp/ccPaHA63.s:165    .text:00000000000000dc .L0 
+     /tmp/ccPaHA63.s:167    .text:00000000000000e0 .L0 
+     /tmp/ccPaHA63.s:168    .text:00000000000000e0 .L0 
+     /tmp/ccPaHA63.s:170    .text:00000000000000e4 .L0 
+     /tmp/ccPaHA63.s:171    .text:00000000000000e4 .L0 
+     /tmp/ccPaHA63.s:173    .text:00000000000000e8 .L0 
+     /tmp/ccPaHA63.s:174    .text:00000000000000e8 .L0 
+     /tmp/ccPaHA63.s:176    .text:00000000000000ec .L0 
+     /tmp/ccPaHA63.s:177    .text:00000000000000f0 .L0 
+     /tmp/ccPaHA63.s:178    .text:00000000000000f0 .L0 
+     /tmp/ccPaHA63.s:180    .text:00000000000000f4 .L0 
+     /tmp/ccPaHA63.s:182    .text:00000000000000f8 .L0 
+     /tmp/ccPaHA63.s:188    .text:00000000000000f8 _ZN10KSemaphore8allocateEj
+     /tmp/ccPaHA63.s:191    .text:00000000000000f8 .L0 
+     /tmp/ccPaHA63.s:193    .text:00000000000000f8 .L0 
+     /tmp/ccPaHA63.s:194    .text:00000000000000fc .L0 
+     /tmp/ccPaHA63.s:199    .text:000000000000010c .L0 
+     /tmp/ccPaHA63.s:200    .text:000000000000010c .L0 
+     /tmp/ccPaHA63.s:201    .text:000000000000010c .L0 
+     /tmp/ccPaHA63.s:202    .text:000000000000010c .L0 
+     /tmp/ccPaHA63.s:204    .text:0000000000000110 .L0 
+     /tmp/ccPaHA63.s:206    .text:0000000000000110 .L0 
+     /tmp/ccPaHA63.s:207    .text:0000000000000110 .L0 
+     /tmp/ccPaHA63.s:209    .text:0000000000000118 .L0 
+     /tmp/ccPaHA63.s:214    .text:0000000000000124 .L0 
+     /tmp/ccPaHA63.s:215    .text:0000000000000124 .L0 
+     /tmp/ccPaHA63.s:216    .text:0000000000000124 .L0 
+     /tmp/ccPaHA63.s:221    .text:0000000000000130 .L0 
+     /tmp/ccPaHA63.s:222    .text:0000000000000130 .L0 
+     /tmp/ccPaHA63.s:225    .text:0000000000000138 .L0 
+     /tmp/ccPaHA63.s:230    .text:0000000000000148 .L0 
+     /tmp/ccPaHA63.s:231    .text:0000000000000148 .L0 
+     /tmp/ccPaHA63.s:237    .text:0000000000000158 .L0 
+     /tmp/ccPaHA63.s:238    .text:0000000000000158 .L0 
+     /tmp/ccPaHA63.s:245    .text:0000000000000168 .L0 
+     /tmp/ccPaHA63.s:246    .text:0000000000000168 .L0 
+     /tmp/ccPaHA63.s:248    .text:0000000000000170 .L0 
+     /tmp/ccPaHA63.s:249    .text:0000000000000170 .L0 
+     /tmp/ccPaHA63.s:251    .text:0000000000000174 .L0 
+     /tmp/ccPaHA63.s:252    .text:0000000000000174 .L0 
+     /tmp/ccPaHA63.s:254    .text:0000000000000178 .L0 
+     /tmp/ccPaHA63.s:256    .text:000000000000017c .L0 
+     /tmp/ccPaHA63.s:258    .text:0000000000000180 .L0 
+     /tmp/ccPaHA63.s:262    .text:0000000000000184 .L0 
+     /tmp/ccPaHA63.s:264    .text:0000000000000184 .L0 
+     /tmp/ccPaHA63.s:266    .text:000000000000018c .L0 
+     /tmp/ccPaHA63.s:272    .text:000000000000018c _ZN10KSemaphore7releaseEPS_
+GAS LISTING /tmp/ccPaHA63.s 			page 33
+
+
+     /tmp/ccPaHA63.s:275    .text:000000000000018c .L0 
+     /tmp/ccPaHA63.s:277    .text:000000000000018c .L0 
+     /tmp/ccPaHA63.s:278    .text:0000000000000190 .L0 
+     /tmp/ccPaHA63.s:280    .text:0000000000000194 .L0 
+     /tmp/ccPaHA63.s:282    .text:0000000000000198 .L0 
+     /tmp/ccPaHA63.s:284    .text:0000000000000198 .L0 
+     /tmp/ccPaHA63.s:286    .text:000000000000019c .L0 
+     /tmp/ccPaHA63.s:289    .text:00000000000001a8 .L0 
+     /tmp/ccPaHA63.s:292    .text:00000000000001b4 .L0 
+     /tmp/ccPaHA63.s:293    .text:00000000000001b4 .L0 
+     /tmp/ccPaHA63.s:298    .text:00000000000001c4 .L0 
+     /tmp/ccPaHA63.s:299    .text:00000000000001c4 .L0 
+     /tmp/ccPaHA63.s:302    .text:00000000000001d0 .L0 
+     /tmp/ccPaHA63.s:307    .text:00000000000001d8 .L0 
+     /tmp/ccPaHA63.s:308    .text:00000000000001d8 .L0 
+     /tmp/ccPaHA63.s:311    .text:00000000000001e0 .L0 
+     /tmp/ccPaHA63.s:313    .text:00000000000001e4 .L0 
+     /tmp/ccPaHA63.s:314    .text:00000000000001e4 .L0 
+     /tmp/ccPaHA63.s:316    .text:00000000000001e8 .L0 
+     /tmp/ccPaHA63.s:318    .text:00000000000001ec .L0 
+     /tmp/ccPaHA63.s:319    .text:00000000000001ec .L0 
+     /tmp/ccPaHA63.s:321    .text:00000000000001f0 .L0 
+     /tmp/ccPaHA63.s:322    .text:00000000000001f0 .L0 
+     /tmp/ccPaHA63.s:325    .text:00000000000001f8 .L0 
+     /tmp/ccPaHA63.s:326    .text:00000000000001f8 .L0 
+     /tmp/ccPaHA63.s:328    .text:00000000000001fc .L0 
+     /tmp/ccPaHA63.s:329    .text:00000000000001fc .L0 
+     /tmp/ccPaHA63.s:331    .text:0000000000000200 .L0 
+     /tmp/ccPaHA63.s:332    .text:0000000000000200 .L0 
+     /tmp/ccPaHA63.s:335    .text:0000000000000204 .L0 
+     /tmp/ccPaHA63.s:340    .text:0000000000000210 .L0 
+     /tmp/ccPaHA63.s:341    .text:0000000000000210 .L0 
+     /tmp/ccPaHA63.s:345    .text:0000000000000214 .L0 
+     /tmp/ccPaHA63.s:346    .text:0000000000000218 .L0 
+     /tmp/ccPaHA63.s:347    .text:0000000000000218 .L0 
+     /tmp/ccPaHA63.s:348    .text:0000000000000218 .L0 
+     /tmp/ccPaHA63.s:350    .text:000000000000021c .L0 
+     /tmp/ccPaHA63.s:354    .text:0000000000000220 .L0 
+     /tmp/ccPaHA63.s:356    .text:0000000000000220 .L0 
+     /tmp/ccPaHA63.s:362    .text:0000000000000228 .L0 
+     /tmp/ccPaHA63.s:373    .text:0000000000000238 .L0 
+     /tmp/ccPaHA63.s:379    .text:0000000000000240 .L0 
+     /tmp/ccPaHA63.s:382    .text:0000000000000248 .L0 
+     /tmp/ccPaHA63.s:388    .text:0000000000000248 _ZN10KSemaphore11isAllocatedEPKS_
+     /tmp/ccPaHA63.s:391    .text:0000000000000248 .L0 
+     /tmp/ccPaHA63.s:393    .text:0000000000000248 .L0 
+     /tmp/ccPaHA63.s:394    .text:000000000000024c .L0 
+     /tmp/ccPaHA63.s:396    .text:0000000000000250 .L0 
+     /tmp/ccPaHA63.s:398    .text:0000000000000254 .L0 
+     /tmp/ccPaHA63.s:400    .text:0000000000000254 .L0 
+     /tmp/ccPaHA63.s:402    .text:0000000000000258 .L0 
+     /tmp/ccPaHA63.s:405    .text:0000000000000264 .L0 
+     /tmp/ccPaHA63.s:408    .text:0000000000000270 .L0 
+     /tmp/ccPaHA63.s:409    .text:0000000000000270 .L0 
+     /tmp/ccPaHA63.s:415    .text:0000000000000280 .L0 
+     /tmp/ccPaHA63.s:416    .text:0000000000000280 .L0 
+     /tmp/ccPaHA63.s:420    .text:000000000000028c .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 34
+
+
+     /tmp/ccPaHA63.s:424    .text:0000000000000294 .L0 
+     /tmp/ccPaHA63.s:425    .text:0000000000000294 .L0 
+     /tmp/ccPaHA63.s:429    .text:000000000000029c .L0 
+     /tmp/ccPaHA63.s:433    .text:00000000000002a0 .L0 
+     /tmp/ccPaHA63.s:434    .text:00000000000002a4 .L0 
+     /tmp/ccPaHA63.s:435    .text:00000000000002a4 .L0 
+     /tmp/ccPaHA63.s:436    .text:00000000000002a4 .L0 
+     /tmp/ccPaHA63.s:438    .text:00000000000002a8 .L0 
+     /tmp/ccPaHA63.s:442    .text:00000000000002ac .L0 
+     /tmp/ccPaHA63.s:444    .text:00000000000002ac .L0 
+     /tmp/ccPaHA63.s:450    .text:00000000000002b4 .L0 
+     /tmp/ccPaHA63.s:458    .text:00000000000002c4 .L0 
+     /tmp/ccPaHA63.s:464    .text:00000000000002c4 _ZN10KSemaphore13getUsedBitmapEv
+     /tmp/ccPaHA63.s:467    .text:00000000000002c4 .L0 
+     /tmp/ccPaHA63.s:468    .text:00000000000002c4 .L0 
+     /tmp/ccPaHA63.s:469    .text:00000000000002c8 .L0 
+     /tmp/ccPaHA63.s:471    .text:00000000000002cc .L0 
+     /tmp/ccPaHA63.s:473    .text:00000000000002d0 .L0 
+     /tmp/ccPaHA63.s:475    .text:00000000000002d0 .L0 
+     /tmp/ccPaHA63.s:476    .text:00000000000002d0 .L0 
+     /tmp/ccPaHA63.s:478    .text:00000000000002dc .L0 
+     /tmp/ccPaHA63.s:479    .text:00000000000002dc .L0 
+     /tmp/ccPaHA63.s:481    .text:00000000000002e0 .L0 
+     /tmp/ccPaHA63.s:483    .text:00000000000002e4 .L0 
+     /tmp/ccPaHA63.s:489    .text:00000000000002e4 _ZN10KSemaphore17getAllocatedCountEv
+     /tmp/ccPaHA63.s:492    .text:00000000000002e4 .L0 
+     /tmp/ccPaHA63.s:493    .text:00000000000002e4 .L0 
+     /tmp/ccPaHA63.s:494    .text:00000000000002e8 .L0 
+     /tmp/ccPaHA63.s:496    .text:00000000000002ec .L0 
+     /tmp/ccPaHA63.s:498    .text:00000000000002f0 .L0 
+     /tmp/ccPaHA63.s:501    .text:00000000000002f0 .L0 
+     /tmp/ccPaHA63.s:502    .text:00000000000002f0 .L0 
+     /tmp/ccPaHA63.s:503    .text:00000000000002f0 .L0 
+     /tmp/ccPaHA63.s:506    .text:00000000000002f8 .L0 
+     /tmp/ccPaHA63.s:510    .text:00000000000002fc .L0 
+     /tmp/ccPaHA63.s:511    .text:00000000000002fc .L0 
+     /tmp/ccPaHA63.s:513    .text:0000000000000300 .L0 
+     /tmp/ccPaHA63.s:514    .text:0000000000000300 .L0 
+     /tmp/ccPaHA63.s:516    .text:0000000000000304 .L0 
+     /tmp/ccPaHA63.s:519    .text:0000000000000308 .L0 
+     /tmp/ccPaHA63.s:520    .text:0000000000000308 .L0 
+     /tmp/ccPaHA63.s:523    .text:000000000000030c .L0 
+     /tmp/ccPaHA63.s:526    .text:0000000000000310 .L0 
+     /tmp/ccPaHA63.s:527    .text:0000000000000314 .L0 
+     /tmp/ccPaHA63.s:528    .text:0000000000000314 .L0 
+     /tmp/ccPaHA63.s:530    .text:0000000000000318 .L0 
+     /tmp/ccPaHA63.s:532    .text:000000000000031c .L0 
+     /tmp/ccPaHA63.s:538    .text:000000000000031c _ZNK10KSemaphore8getValueEv
+     /tmp/ccPaHA63.s:541    .text:000000000000031c .L0 
+     /tmp/ccPaHA63.s:543    .text:000000000000031c .L0 
+     /tmp/ccPaHA63.s:544    .text:0000000000000320 .L0 
+     /tmp/ccPaHA63.s:546    .text:0000000000000324 .L0 
+     /tmp/ccPaHA63.s:548    .text:0000000000000328 .L0 
+     /tmp/ccPaHA63.s:550    .text:0000000000000328 .L0 
+     /tmp/ccPaHA63.s:551    .text:0000000000000328 .L0 
+     /tmp/ccPaHA63.s:554    .text:0000000000000330 .L0 
+     /tmp/ccPaHA63.s:555    .text:0000000000000330 .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 35
+
+
+     /tmp/ccPaHA63.s:557    .text:0000000000000334 .L0 
+     /tmp/ccPaHA63.s:559    .text:0000000000000338 .L0 
+     /tmp/ccPaHA63.s:565    .text:0000000000000338 _ZNK10KSemaphore8isClosedEv
+     /tmp/ccPaHA63.s:568    .text:0000000000000338 .L0 
+     /tmp/ccPaHA63.s:570    .text:0000000000000338 .L0 
+     /tmp/ccPaHA63.s:571    .text:000000000000033c .L0 
+     /tmp/ccPaHA63.s:573    .text:0000000000000340 .L0 
+     /tmp/ccPaHA63.s:575    .text:0000000000000344 .L0 
+     /tmp/ccPaHA63.s:577    .text:0000000000000344 .L0 
+     /tmp/ccPaHA63.s:578    .text:0000000000000344 .L0 
+     /tmp/ccPaHA63.s:581    .text:000000000000034c .L0 
+     /tmp/ccPaHA63.s:582    .text:000000000000034c .L0 
+     /tmp/ccPaHA63.s:584    .text:0000000000000350 .L0 
+     /tmp/ccPaHA63.s:586    .text:0000000000000354 .L0 
+     /tmp/ccPaHA63.s:592    .text:0000000000000354 _ZNK10KSemaphore17hasWaitingThreadsEv
+     /tmp/ccPaHA63.s:595    .text:0000000000000354 .L0 
+     /tmp/ccPaHA63.s:597    .text:0000000000000354 .L0 
+     /tmp/ccPaHA63.s:598    .text:0000000000000358 .L0 
+     /tmp/ccPaHA63.s:600    .text:000000000000035c .L0 
+     /tmp/ccPaHA63.s:602    .text:0000000000000360 .L0 
+     /tmp/ccPaHA63.s:604    .text:0000000000000360 .L0 
+     /tmp/ccPaHA63.s:605    .text:0000000000000360 .L0 
+     /tmp/ccPaHA63.s:608    .text:0000000000000364 .L0 
+     /tmp/ccPaHA63.s:610    .text:000000000000036c .L0 
+     /tmp/ccPaHA63.s:611    .text:000000000000036c .L0 
+     /tmp/ccPaHA63.s:613    .text:0000000000000370 .L0 
+     /tmp/ccPaHA63.s:615    .text:0000000000000374 .L0 
+     /tmp/ccPaHA63.s:621    .text:0000000000000374 _ZN10KSemaphore12putWaitQueueEP7KThread
+     /tmp/ccPaHA63.s:624    .text:0000000000000374 .L0 
+     /tmp/ccPaHA63.s:626    .text:0000000000000374 .L0 
+     /tmp/ccPaHA63.s:627    .text:0000000000000378 .L0 
+     /tmp/ccPaHA63.s:629    .text:000000000000037c .L0 
+     /tmp/ccPaHA63.s:631    .text:0000000000000380 .L0 
+     /tmp/ccPaHA63.s:633    .text:0000000000000380 .L0 
+     /tmp/ccPaHA63.s:635    .text:0000000000000384 .L0 
+     /tmp/ccPaHA63.s:636    .text:0000000000000384 .L0 
+     /tmp/ccPaHA63.s:638    .text:0000000000000388 .L0 
+     /tmp/ccPaHA63.s:639    .text:0000000000000388 .L0 
+     /tmp/ccPaHA63.s:641    .text:000000000000038c .L0 
+     /tmp/ccPaHA63.s:643    .text:0000000000000390 .L0 
+     /tmp/ccPaHA63.s:644    .text:0000000000000390 .L0 
+     /tmp/ccPaHA63.s:646    .text:0000000000000394 .L0 
+     /tmp/ccPaHA63.s:647    .text:0000000000000394 .L0 
+     /tmp/ccPaHA63.s:650    .text:0000000000000398 .L0 
+     /tmp/ccPaHA63.s:651    .text:000000000000039c .L0 
+     /tmp/ccPaHA63.s:652    .text:000000000000039c .L0 
+     /tmp/ccPaHA63.s:653    .text:000000000000039c .L0 
+     /tmp/ccPaHA63.s:655    .text:00000000000003a0 .L0 
+     /tmp/ccPaHA63.s:658    .text:00000000000003a4 .L0 
+     /tmp/ccPaHA63.s:660    .text:00000000000003a4 .L0 
+     /tmp/ccPaHA63.s:661    .text:00000000000003a4 .L0 
+     /tmp/ccPaHA63.s:663    .text:00000000000003a8 .L0 
+     /tmp/ccPaHA63.s:664    .text:00000000000003a8 .L0 
+     /tmp/ccPaHA63.s:666    .text:00000000000003ac .L0 
+     /tmp/ccPaHA63.s:667    .text:00000000000003b0 .L0 
+     /tmp/ccPaHA63.s:673    .text:00000000000003b0 _ZN10KSemaphore5waitNEj
+     /tmp/ccPaHA63.s:676    .text:00000000000003b0 .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 36
+
+
+     /tmp/ccPaHA63.s:678    .text:00000000000003b0 .L0 
+     /tmp/ccPaHA63.s:679    .text:00000000000003b0 .L0 
+     /tmp/ccPaHA63.s:680    .text:00000000000003b0 .L0 
+     /tmp/ccPaHA63.s:682    .text:00000000000003b4 .L0 
+     /tmp/ccPaHA63.s:684    .text:00000000000003b8 .L0 
+     /tmp/ccPaHA63.s:686    .text:00000000000003bc .L0 
+     /tmp/ccPaHA63.s:687    .text:00000000000003bc .L0 
+     /tmp/ccPaHA63.s:689    .text:00000000000003c0 .L0 
+     /tmp/ccPaHA63.s:691    .text:00000000000003c4 .L0 
+     /tmp/ccPaHA63.s:693    .text:00000000000003c8 .L0 
+     /tmp/ccPaHA63.s:694    .text:00000000000003cc .L0 
+     /tmp/ccPaHA63.s:698    .text:00000000000003d8 .L0 
+     /tmp/ccPaHA63.s:699    .text:00000000000003d8 .L0 
+     /tmp/ccPaHA63.s:700    .text:00000000000003d8 .L0 
+     /tmp/ccPaHA63.s:702    .text:00000000000003dc .L0 
+     /tmp/ccPaHA63.s:704    .text:00000000000003dc .L0 
+     /tmp/ccPaHA63.s:705    .text:00000000000003dc .L0 
+     /tmp/ccPaHA63.s:709    .text:00000000000003e8 .L0 
+     /tmp/ccPaHA63.s:711    .text:00000000000003ec .L0 
+     /tmp/ccPaHA63.s:713    .text:00000000000003f0 .L0 
+     /tmp/ccPaHA63.s:716    .text:00000000000003f8 .L0 
+     /tmp/ccPaHA63.s:717    .text:00000000000003f8 .L0 
+     /tmp/ccPaHA63.s:719    .text:00000000000003fc .L0 
+     /tmp/ccPaHA63.s:720    .text:00000000000003fc .L0 
+     /tmp/ccPaHA63.s:722    .text:0000000000000400 .L0 
+     /tmp/ccPaHA63.s:723    .text:0000000000000400 .L0 
+     /tmp/ccPaHA63.s:728    .text:000000000000040c .L0 
+     /tmp/ccPaHA63.s:729    .text:000000000000040c .L0 
+     /tmp/ccPaHA63.s:732    .text:0000000000000414 .L0 
+     /tmp/ccPaHA63.s:734    .text:0000000000000418 .L0 
+     /tmp/ccPaHA63.s:735    .text:0000000000000418 .L0 
+     /tmp/ccPaHA63.s:738    .text:000000000000041c .L0 
+     /tmp/ccPaHA63.s:739    .text:000000000000041c .L0 
+     /tmp/ccPaHA63.s:741    .text:0000000000000420 .L0 
+     /tmp/ccPaHA63.s:742    .text:0000000000000420 .L0 
+     /tmp/ccPaHA63.s:746    .text:0000000000000424 .L0 
+     /tmp/ccPaHA63.s:747    .text:0000000000000424 .L0 
+     /tmp/ccPaHA63.s:748    .text:0000000000000428 .L0 
+     /tmp/ccPaHA63.s:750    .text:000000000000042c .L0 
+     /tmp/ccPaHA63.s:751    .text:000000000000042c .L0 
+     /tmp/ccPaHA63.s:753    .text:0000000000000430 .L0 
+     /tmp/ccPaHA63.s:756    .text:0000000000000434 .L0 
+     /tmp/ccPaHA63.s:761    .text:0000000000000438 .L0 
+     /tmp/ccPaHA63.s:762    .text:0000000000000438 .L0 
+     /tmp/ccPaHA63.s:766    .text:0000000000000440 .L0 
+     /tmp/ccPaHA63.s:767    .text:0000000000000440 .L0 
+     /tmp/ccPaHA63.s:773    .text:0000000000000448 .L0 
+     /tmp/ccPaHA63.s:779    .text:0000000000000450 .L0 
+     /tmp/ccPaHA63.s:782    .text:0000000000000454 .L0 
+     /tmp/ccPaHA63.s:785    .text:0000000000000458 .L0 
+     /tmp/ccPaHA63.s:786    .text:0000000000000458 .L0 
+     /tmp/ccPaHA63.s:787    .text:0000000000000458 .L0 
+     /tmp/ccPaHA63.s:788    .text:0000000000000458 .L0 
+     /tmp/ccPaHA63.s:790    .text:0000000000000458 .L0 
+     /tmp/ccPaHA63.s:798    .text:0000000000000468 .L0 
+     /tmp/ccPaHA63.s:804    .text:0000000000000468 _ZN10KSemaphore4waitEv
+     /tmp/ccPaHA63.s:807    .text:0000000000000468 .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 37
+
+
+     /tmp/ccPaHA63.s:809    .text:0000000000000468 .L0 
+     /tmp/ccPaHA63.s:810    .text:000000000000046c .L0 
+     /tmp/ccPaHA63.s:813    .text:0000000000000474 .L0 
+     /tmp/ccPaHA63.s:814    .text:0000000000000474 .L0 
+     /tmp/ccPaHA63.s:816    .text:0000000000000478 .L0 
+     /tmp/ccPaHA63.s:818    .text:0000000000000478 .L0 
+     /tmp/ccPaHA63.s:819    .text:0000000000000478 .L0 
+     /tmp/ccPaHA63.s:823    .text:0000000000000484 .L0 
+     /tmp/ccPaHA63.s:824    .text:0000000000000488 .L0 
+     /tmp/ccPaHA63.s:826    .text:000000000000048c .L0 
+     /tmp/ccPaHA63.s:827    .text:000000000000048c .L0 
+     /tmp/ccPaHA63.s:829    .text:0000000000000490 .L0 
+     /tmp/ccPaHA63.s:831    .text:0000000000000494 .L0 
+     /tmp/ccPaHA63.s:837    .text:0000000000000494 _ZN10KSemaphore12getWaitQueueEv
+     /tmp/ccPaHA63.s:840    .text:0000000000000494 .L0 
+     /tmp/ccPaHA63.s:842    .text:0000000000000494 .L0 
+     /tmp/ccPaHA63.s:843    .text:0000000000000498 .L0 
+     /tmp/ccPaHA63.s:845    .text:000000000000049c .L0 
+     /tmp/ccPaHA63.s:847    .text:00000000000004a0 .L0 
+     /tmp/ccPaHA63.s:850    .text:00000000000004a4 .L0 
+     /tmp/ccPaHA63.s:851    .text:00000000000004a4 .L0 
+     /tmp/ccPaHA63.s:854    .text:00000000000004a8 .L0 
+     /tmp/ccPaHA63.s:857    .text:00000000000004ac .L0 
+     /tmp/ccPaHA63.s:858    .text:00000000000004ac .L0 
+     /tmp/ccPaHA63.s:859    .text:00000000000004ac .L0 
+     /tmp/ccPaHA63.s:861    .text:00000000000004b0 .L0 
+     /tmp/ccPaHA63.s:863    .text:00000000000004b4 .L0 
+     /tmp/ccPaHA63.s:866    .text:00000000000004b8 .L0 
+     /tmp/ccPaHA63.s:867    .text:00000000000004b8 .L0 
+     /tmp/ccPaHA63.s:871    .text:00000000000004bc .L0 
+     /tmp/ccPaHA63.s:872    .text:00000000000004bc .L0 
+     /tmp/ccPaHA63.s:873    .text:00000000000004c0 .L0 
+     /tmp/ccPaHA63.s:874    .text:00000000000004c0 .L0 
+     /tmp/ccPaHA63.s:875    .text:00000000000004c0 .L0 
+     /tmp/ccPaHA63.s:877    .text:00000000000004c4 .L0 
+     /tmp/ccPaHA63.s:881    .text:00000000000004c8 .L0 
+     /tmp/ccPaHA63.s:883    .text:00000000000004c8 .L0 
+     /tmp/ccPaHA63.s:884    .text:00000000000004c8 .L0 
+     /tmp/ccPaHA63.s:886    .text:00000000000004d0 .L0 
+     /tmp/ccPaHA63.s:892    .text:00000000000004d0 _ZN10KSemaphore7signalNEj
+     /tmp/ccPaHA63.s:895    .text:00000000000004d0 .L0 
+     /tmp/ccPaHA63.s:897    .text:00000000000004d0 .L0 
+     /tmp/ccPaHA63.s:898    .text:00000000000004d0 .L0 
+     /tmp/ccPaHA63.s:899    .text:00000000000004d0 .L0 
+     /tmp/ccPaHA63.s:901    .text:00000000000004d4 .L0 
+     /tmp/ccPaHA63.s:903    .text:00000000000004d8 .L0 
+     /tmp/ccPaHA63.s:904    .text:00000000000004dc .L0 
+     /tmp/ccPaHA63.s:908    .text:00000000000004e8 .L0 
+     /tmp/ccPaHA63.s:909    .text:00000000000004e8 .L0 
+     /tmp/ccPaHA63.s:910    .text:00000000000004e8 .L0 
+     /tmp/ccPaHA63.s:912    .text:00000000000004ec .L0 
+     /tmp/ccPaHA63.s:915    .text:00000000000004f0 .L0 
+     /tmp/ccPaHA63.s:917    .text:00000000000004f4 .L0 
+     /tmp/ccPaHA63.s:918    .text:00000000000004f4 .L0 
+     /tmp/ccPaHA63.s:925    .text:0000000000000500 .L0 
+     /tmp/ccPaHA63.s:926    .text:0000000000000500 .L0 
+     /tmp/ccPaHA63.s:927    .text:0000000000000500 .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 38
+
+
+     /tmp/ccPaHA63.s:929    .text:0000000000000504 .L0 
+     /tmp/ccPaHA63.s:933    .text:0000000000000508 .L0 
+     /tmp/ccPaHA63.s:934    .text:0000000000000508 .L0 
+     /tmp/ccPaHA63.s:935    .text:0000000000000508 .L0 
+     /tmp/ccPaHA63.s:937    .text:000000000000050c .L0 
+     /tmp/ccPaHA63.s:940    .text:0000000000000510 .L0 
+     /tmp/ccPaHA63.s:942    .text:0000000000000514 .L0 
+     /tmp/ccPaHA63.s:944    .text:0000000000000518 .L0 
+     /tmp/ccPaHA63.s:945    .text:0000000000000518 .L0 
+     /tmp/ccPaHA63.s:948    .text:0000000000000520 .L0 
+     /tmp/ccPaHA63.s:949    .text:0000000000000520 .L0 
+     /tmp/ccPaHA63.s:953    .text:000000000000052c .L0 
+     /tmp/ccPaHA63.s:954    .text:000000000000052c .L0 
+     /tmp/ccPaHA63.s:956    .text:0000000000000530 .L0 
+     /tmp/ccPaHA63.s:957    .text:0000000000000530 .L0 
+     /tmp/ccPaHA63.s:960    .text:0000000000000538 .L0 
+     /tmp/ccPaHA63.s:962    .text:000000000000053c .L0 
+     /tmp/ccPaHA63.s:967    .text:0000000000000544 .L0 
+     /tmp/ccPaHA63.s:968    .text:0000000000000544 .L0 
+     /tmp/ccPaHA63.s:969    .text:0000000000000544 .L0 
+     /tmp/ccPaHA63.s:970    .text:0000000000000544 .L0 
+     /tmp/ccPaHA63.s:973    .text:0000000000000544 .L0 
+     /tmp/ccPaHA63.s:976    .text:0000000000000548 .L0 
+     /tmp/ccPaHA63.s:979    .text:000000000000054c .L0 
+     /tmp/ccPaHA63.s:980    .text:000000000000054c .L0 
+     /tmp/ccPaHA63.s:981    .text:000000000000054c .L0 
+     /tmp/ccPaHA63.s:982    .text:000000000000054c .L0 
+     /tmp/ccPaHA63.s:984    .text:000000000000054c .L0 
+     /tmp/ccPaHA63.s:988    .text:0000000000000550 .L0 
+     /tmp/ccPaHA63.s:989    .text:0000000000000554 .L0 
+     /tmp/ccPaHA63.s:990    .text:0000000000000554 .L0 
+     /tmp/ccPaHA63.s:992    .text:0000000000000558 .L0 
+     /tmp/ccPaHA63.s:993    .text:0000000000000558 .L0 
+     /tmp/ccPaHA63.s:995    .text:000000000000055c .L0 
+     /tmp/ccPaHA63.s:998    .text:0000000000000560 .L0 
+     /tmp/ccPaHA63.s:1002   .text:0000000000000564 .L0 
+     /tmp/ccPaHA63.s:1004   .text:0000000000000564 .L0 
+     /tmp/ccPaHA63.s:1010   .text:0000000000000574 .L0 
+     /tmp/ccPaHA63.s:1016   .text:0000000000000574 _ZN10KSemaphore6signalEv
+     /tmp/ccPaHA63.s:1019   .text:0000000000000574 .L0 
+     /tmp/ccPaHA63.s:1021   .text:0000000000000574 .L0 
+     /tmp/ccPaHA63.s:1022   .text:0000000000000578 .L0 
+     /tmp/ccPaHA63.s:1025   .text:0000000000000580 .L0 
+     /tmp/ccPaHA63.s:1026   .text:0000000000000580 .L0 
+     /tmp/ccPaHA63.s:1028   .text:0000000000000584 .L0 
+     /tmp/ccPaHA63.s:1030   .text:0000000000000584 .L0 
+     /tmp/ccPaHA63.s:1031   .text:0000000000000584 .L0 
+     /tmp/ccPaHA63.s:1035   .text:0000000000000590 .L0 
+     /tmp/ccPaHA63.s:1036   .text:0000000000000594 .L0 
+     /tmp/ccPaHA63.s:1038   .text:0000000000000598 .L0 
+     /tmp/ccPaHA63.s:1039   .text:0000000000000598 .L0 
+     /tmp/ccPaHA63.s:1041   .text:000000000000059c .L0 
+     /tmp/ccPaHA63.s:1043   .text:00000000000005a0 .L0 
+     /tmp/ccPaHA63.s:1049   .text:00000000000005a0 _ZN10KSemaphore5closeEv
+     /tmp/ccPaHA63.s:1052   .text:00000000000005a0 .L0 
+     /tmp/ccPaHA63.s:1054   .text:00000000000005a0 .L0 
+     /tmp/ccPaHA63.s:1055   .text:00000000000005a0 .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 39
+
+
+     /tmp/ccPaHA63.s:1056   .text:00000000000005a0 .L0 
+     /tmp/ccPaHA63.s:1058   .text:00000000000005a4 .L0 
+     /tmp/ccPaHA63.s:1060   .text:00000000000005a8 .L0 
+     /tmp/ccPaHA63.s:1061   .text:00000000000005ac .L0 
+     /tmp/ccPaHA63.s:1065   .text:00000000000005b8 .L0 
+     /tmp/ccPaHA63.s:1066   .text:00000000000005b8 .L0 
+     /tmp/ccPaHA63.s:1067   .text:00000000000005b8 .L0 
+     /tmp/ccPaHA63.s:1069   .text:00000000000005bc .L0 
+     /tmp/ccPaHA63.s:1072   .text:00000000000005c0 .L0 
+     /tmp/ccPaHA63.s:1073   .text:00000000000005c0 .L0 
+     /tmp/ccPaHA63.s:1076   .text:00000000000005c8 .L0 
+     /tmp/ccPaHA63.s:1077   .text:00000000000005c8 .L0 
+     /tmp/ccPaHA63.s:1081   .text:00000000000005cc .L0 
+     /tmp/ccPaHA63.s:1082   .text:00000000000005cc .L0 
+     /tmp/ccPaHA63.s:1083   .text:00000000000005cc .L0 
+     /tmp/ccPaHA63.s:1085   .text:00000000000005d0 .L0 
+     /tmp/ccPaHA63.s:1088   .text:00000000000005d4 .L0 
+     /tmp/ccPaHA63.s:1089   .text:00000000000005d4 .L0 
+     /tmp/ccPaHA63.s:1093   .text:00000000000005e0 .L0 
+     /tmp/ccPaHA63.s:1094   .text:00000000000005e0 .L0 
+     /tmp/ccPaHA63.s:1097   .text:00000000000005e8 .L0 
+     /tmp/ccPaHA63.s:1098   .text:00000000000005e8 .L0 
+     /tmp/ccPaHA63.s:1100   .text:00000000000005ec .L0 
+     /tmp/ccPaHA63.s:1101   .text:00000000000005ec .L0 
+     /tmp/ccPaHA63.s:1104   .text:00000000000005f4 .L0 
+     /tmp/ccPaHA63.s:1106   .text:00000000000005f8 .L0 
+     /tmp/ccPaHA63.s:1111   .text:0000000000000600 .L0 
+     /tmp/ccPaHA63.s:1112   .text:0000000000000600 .L0 
+     /tmp/ccPaHA63.s:1113   .text:0000000000000600 .L0 
+     /tmp/ccPaHA63.s:1114   .text:0000000000000600 .L0 
+     /tmp/ccPaHA63.s:1117   .text:0000000000000600 .L0 
+     /tmp/ccPaHA63.s:1120   .text:0000000000000604 .L0 
+     /tmp/ccPaHA63.s:1123   .text:0000000000000608 .L0 
+     /tmp/ccPaHA63.s:1124   .text:0000000000000608 .L0 
+     /tmp/ccPaHA63.s:1125   .text:0000000000000608 .L0 
+     /tmp/ccPaHA63.s:1126   .text:0000000000000608 .L0 
+     /tmp/ccPaHA63.s:1128   .text:0000000000000608 .L0 
+     /tmp/ccPaHA63.s:1131   .text:000000000000060c .L0 
+     /tmp/ccPaHA63.s:1132   .text:0000000000000610 .L0 
+     /tmp/ccPaHA63.s:1134   .text:0000000000000614 .L0 
+     /tmp/ccPaHA63.s:1135   .text:0000000000000614 .L0 
+     /tmp/ccPaHA63.s:1137   .text:0000000000000618 .L0 
+     /tmp/ccPaHA63.s:1140   .text:000000000000061c .L0 
+     /tmp/ccPaHA63.s:1142   .text:0000000000000620 .L0 
+     /tmp/ccPaHA63.s:1147   .text:0000000000000620 _GLOBAL__sub_I__ZN10KSemaphore13semaphorePoolE
+     /tmp/ccPaHA63.s:1150   .text:0000000000000620 .L0 
+     /tmp/ccPaHA63.s:1151   .text:0000000000000620 .L0 
+     /tmp/ccPaHA63.s:1152   .text:0000000000000624 .L0 
+     /tmp/ccPaHA63.s:1155   .text:000000000000062c .L0 
+     /tmp/ccPaHA63.s:1156   .text:000000000000062c .L0 
+     /tmp/ccPaHA63.s:1158   .text:0000000000000630 .L0 
+     /tmp/ccPaHA63.s:1160   .text:0000000000000630 .L0 
+     /tmp/ccPaHA63.s:1166   .text:0000000000000648 .L0 
+     /tmp/ccPaHA63.s:1168   .text:000000000000064c .L0 
+     /tmp/ccPaHA63.s:1169   .text:000000000000064c .L0 
+     /tmp/ccPaHA63.s:1171   .text:0000000000000650 .L0 
+     /tmp/ccPaHA63.s:1173   .text:0000000000000654 .L0 
+GAS LISTING /tmp/ccPaHA63.s 			page 40
+
+
+     /tmp/ccPaHA63.s:1194   .bss:0000000000000600 _ZN10KSemaphore10usedBitmapE
+     /tmp/ccPaHA63.s:1190   .bss:0000000000000000 _ZN10KSemaphore13semaphorePoolE
+     /tmp/ccPaHA63.s:1187   .bss:0000000000000000 .LANCHOR0
+     /tmp/ccPaHA63.s:1201   .text:0000000000000654 .L0 
+     /tmp/ccPaHA63.s:119    .text:0000000000000094 .L0 
+     /tmp/ccPaHA63.s:207    .text:0000000000000110 .L0 
+     /tmp/ccPaHA63.s:225    .text:0000000000000138 .L0 
+     /tmp/ccPaHA63.s:286    .text:000000000000019c .L0 
+     /tmp/ccPaHA63.s:289    .text:00000000000001a8 .L0 
+     /tmp/ccPaHA63.s:293    .text:00000000000001b4 .L0 
+     /tmp/ccPaHA63.s:1183   .rodata.cst8:0000000000000000 .LC0
+     /tmp/ccPaHA63.s:299    .text:00000000000001c4 .L0 
+     /tmp/ccPaHA63.s:402    .text:0000000000000258 .L0 
+     /tmp/ccPaHA63.s:405    .text:0000000000000264 .L0 
+     /tmp/ccPaHA63.s:409    .text:0000000000000270 .L0 
+     /tmp/ccPaHA63.s:416    .text:0000000000000280 .L0 
+     /tmp/ccPaHA63.s:476    .text:00000000000002d0 .L0 
+     /tmp/ccPaHA63.s:503    .text:00000000000002f0 .L0 
+     /tmp/ccPaHA63.s:705    .text:00000000000003dc .L0 
+     /tmp/ccPaHA63.s:43     .text:0000000000000028 .L1
+     /tmp/ccPaHA63.s:26     .text:0000000000000014 .L3
+     /tmp/ccPaHA63.s:99     .text:000000000000006c .L14
+     /tmp/ccPaHA63.s:97     .text:0000000000000068 .L11
+     /tmp/ccPaHA63.s:132    .text:00000000000000b8 .L7
+     /tmp/ccPaHA63.s:121    .text:000000000000009c .L9
+     /tmp/ccPaHA63.s:261    .text:0000000000000184 .L19
+     /tmp/ccPaHA63.s:244    .text:0000000000000168 .L17
+     /tmp/ccPaHA63.s:353    .text:0000000000000220 .L23
+     /tmp/ccPaHA63.s:360    .text:0000000000000228 .L24
+     /tmp/ccPaHA63.s:366    .text:0000000000000230 .L25
+     /tmp/ccPaHA63.s:371    .text:0000000000000238 .L26
+     /tmp/ccPaHA63.s:377    .text:0000000000000240 .L27
+     /tmp/ccPaHA63.s:343    .text:0000000000000214 .L22
+     /tmp/ccPaHA63.s:441    .text:00000000000002ac .L31
+     /tmp/ccPaHA63.s:448    .text:00000000000002b4 .L32
+     /tmp/ccPaHA63.s:454    .text:00000000000002bc .L33
+     /tmp/ccPaHA63.s:431    .text:00000000000002a0 .L30
+     /tmp/ccPaHA63.s:524    .text:0000000000000310 .L37
+     /tmp/ccPaHA63.s:508    .text:00000000000002fc .L39
+     /tmp/ccPaHA63.s:648    .text:0000000000000398 .L47
+     /tmp/ccPaHA63.s:657    .text:00000000000003a4 .L51
+     /tmp/ccPaHA63.s:771    .text:0000000000000448 .L55
+     /tmp/ccPaHA63.s:777    .text:0000000000000450 .L56
+     /tmp/ccPaHA63.s:759    .text:0000000000000438 .L62
+     /tmp/ccPaHA63.s:784    .text:0000000000000458 .L57
+     /tmp/ccPaHA63.s:794    .text:0000000000000460 .L58
+     /tmp/ccPaHA63.s:745    .text:0000000000000424 .L53
+     /tmp/ccPaHA63.s:870    .text:00000000000004bc .L65
+     /tmp/ccPaHA63.s:880    .text:00000000000004c8 .L69
+     /tmp/ccPaHA63.s:864    .text:00000000000004b8 .L67
+     /tmp/ccPaHA63.s:966    .text:0000000000000544 .L73
+     /tmp/ccPaHA63.s:978    .text:000000000000054c .L74
+     /tmp/ccPaHA63.s:1001   .text:0000000000000564 .L75
+     /tmp/ccPaHA63.s:1007   .text:000000000000056c .L76
+     /tmp/ccPaHA63.s:923    .text:0000000000000500 .L72
+     /tmp/ccPaHA63.s:986    .text:0000000000000550 .L71
+     /tmp/ccPaHA63.s:1110   .text:0000000000000600 .L86
+GAS LISTING /tmp/ccPaHA63.s 			page 41
+
+
+     /tmp/ccPaHA63.s:1122   .text:0000000000000608 .L87
+     /tmp/ccPaHA63.s:1079   .text:00000000000005cc .L85
+     /tmp/ccPaHA63.s:1129   .text:000000000000060c .L84
+     /tmp/ccPaHA63.s:2615   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccPaHA63.s:4549   .debug_str:0000000000000709 .LASF117
+     /tmp/ccPaHA63.s:4455   .debug_str:0000000000000400 .LASF118
+     /tmp/ccPaHA63.s:4381   .debug_str:000000000000018c .LASF119
+     /tmp/ccPaHA63.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccPaHA63.s:1197   .text:0000000000000654 .Letext0
+     /tmp/ccPaHA63.s:4333   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccPaHA63.s:4467   .debug_str:000000000000045e .LASF0
+     /tmp/ccPaHA63.s:4485   .debug_str:0000000000000500 .LASF1
+     /tmp/ccPaHA63.s:4453   .debug_str:00000000000003f2 .LASF2
+     /tmp/ccPaHA63.s:4427   .debug_str:0000000000000326 .LASF4
+     /tmp/ccPaHA63.s:4533   .debug_str:000000000000069f .LASF3
+     /tmp/ccPaHA63.s:4353   .debug_str:00000000000000a1 .LASF5
+     /tmp/ccPaHA63.s:4489   .debug_str:000000000000051a .LASF6
+     /tmp/ccPaHA63.s:4465   .debug_str:000000000000044b .LASF7
+     /tmp/ccPaHA63.s:4559   .debug_str:000000000000080b .LASF8
+     /tmp/ccPaHA63.s:4415   .debug_str:00000000000002ba .LASF9
+     /tmp/ccPaHA63.s:4505   .debug_str:00000000000005b4 .LASF10
+     /tmp/ccPaHA63.s:4553   .debug_str:00000000000007e4 .LASF11
+     /tmp/ccPaHA63.s:4357   .debug_str:00000000000000b0 .LASF12
+     /tmp/ccPaHA63.s:4341   .debug_str:0000000000000029 .LASF13
+     /tmp/ccPaHA63.s:4367   .debug_str:0000000000000106 .LASF14
+     /tmp/ccPaHA63.s:4525   .debug_str:0000000000000646 .LASF15
+     /tmp/ccPaHA63.s:4383   .debug_str:00000000000001af .LASF16
+     /tmp/ccPaHA63.s:4397   .debug_str:0000000000000250 .LASF56
+     /tmp/ccPaHA63.s:4555   .debug_str:00000000000007f3 .LASF120
+     /tmp/ccPaHA63.s:4503   .debug_str:00000000000005ae .LASF17
+     /tmp/ccPaHA63.s:4499   .debug_str:000000000000059c .LASF18
+     /tmp/ccPaHA63.s:4539   .debug_str:00000000000006cf .LASF19
+     /tmp/ccPaHA63.s:4429   .debug_str:000000000000032d .LASF20
+     /tmp/ccPaHA63.s:4543   .debug_str:00000000000006eb .LASF67
+     /tmp/ccPaHA63.s:4517   .debug_str:0000000000000608 .LASF121
+     /tmp/ccPaHA63.s:4431   .debug_str:0000000000000335 .LASF21
+     /tmp/ccPaHA63.s:4581   .debug_str:00000000000008ed .LASF22
+     /tmp/ccPaHA63.s:4487   .debug_str:0000000000000513 .LASF23
+     /tmp/ccPaHA63.s:4379   .debug_str:0000000000000183 .LASF24
+     /tmp/ccPaHA63.s:4583   .debug_str:00000000000008f2 .LASF25
+     /tmp/ccPaHA63.s:4569   .debug_str:000000000000085a .LASF26
+     /tmp/ccPaHA63.s:4359   .debug_str:00000000000000c0 .LASF27
+     /tmp/ccPaHA63.s:4501   .debug_str:00000000000005a4 .LASF28
+     /tmp/ccPaHA63.s:4403   .debug_str:0000000000000265 .LASF122
+     /tmp/ccPaHA63.s:4395   .debug_str:000000000000023e .LASF29
+     /tmp/ccPaHA63.s:4369   .debug_str:0000000000000112 .LASF31
+     /tmp/ccPaHA63.s:4477   .debug_str:00000000000004b5 .LASF30
+     /tmp/ccPaHA63.s:4437   .debug_str:0000000000000357 .LASF32
+     /tmp/ccPaHA63.s:4479   .debug_str:00000000000004cb .LASF33
+     /tmp/ccPaHA63.s:4345   .debug_str:000000000000003f .LASF34
+     /tmp/ccPaHA63.s:4351   .debug_str:0000000000000099 .LASF35
+     /tmp/ccPaHA63.s:4459   .debug_str:0000000000000420 .LASF36
+     /tmp/ccPaHA63.s:4557   .debug_str:00000000000007fa .LASF37
+     /tmp/ccPaHA63.s:4493   .debug_str:0000000000000546 .LASF38
+     /tmp/ccPaHA63.s:4433   .debug_str:000000000000033a .LASF41
+     /tmp/ccPaHA63.s:4527   .debug_str:000000000000065c .LASF43
+     /tmp/ccPaHA63.s:4355   .debug_str:00000000000000a8 .LASF39
+GAS LISTING /tmp/ccPaHA63.s 			page 42
+
+
+     /tmp/ccPaHA63.s:4377   .debug_str:000000000000016b .LASF40
+     /tmp/ccPaHA63.s:4471   .debug_str:000000000000047a .LASF45
+     /tmp/ccPaHA63.s:4435   .debug_str:0000000000000340 .LASF47
+     /tmp/ccPaHA63.s:4445   .debug_str:00000000000003cb .LASF42
+     /tmp/ccPaHA63.s:4541   .debug_str:00000000000006d8 .LASF44
+     /tmp/ccPaHA63.s:4421   .debug_str:00000000000002f3 .LASF55
+     /tmp/ccPaHA63.s:4443   .debug_str:00000000000003ad .LASF57
+     /tmp/ccPaHA63.s:4551   .debug_str:00000000000007cd .LASF46
+     /tmp/ccPaHA63.s:4573   .debug_str:0000000000000872 .LASF48
+     /tmp/ccPaHA63.s:4405   .debug_str:000000000000026d .LASF49
+     /tmp/ccPaHA63.s:4475   .debug_str:0000000000000497 .LASF50
+     /tmp/ccPaHA63.s:4537   .debug_str:00000000000006c1 .LASF51
+     /tmp/ccPaHA63.s:4529   .debug_str:0000000000000670 .LASF52
+     /tmp/ccPaHA63.s:4567   .debug_str:0000000000000848 .LASF53
+     /tmp/ccPaHA63.s:4579   .debug_str:00000000000008cc .LASF54
+     /tmp/ccPaHA63.s:4447   .debug_str:00000000000003d0 .LASF58
+     /tmp/ccPaHA63.s:4399   .debug_str:0000000000000258 .LASF59
+     /tmp/ccPaHA63.s:4407   .debug_str:0000000000000279 .LASF60
+     /tmp/ccPaHA63.s:4425   .debug_str:000000000000031b .LASF61
+     /tmp/ccPaHA63.s:4449   .debug_str:00000000000003e0 .LASF62
+     /tmp/ccPaHA63.s:4545   .debug_str:00000000000006f7 .LASF63
+     /tmp/ccPaHA63.s:4349   .debug_str:000000000000008d .LASF64
+     /tmp/ccPaHA63.s:4409   .debug_str:000000000000028d .LASF65
+     /tmp/ccPaHA63.s:4521   .debug_str:0000000000000633 .LASF66
+     /tmp/ccPaHA63.s:4469   .debug_str:000000000000046b .LASF68
+     /tmp/ccPaHA63.s:4423   .debug_str:0000000000000300 .LASF69
+     /tmp/ccPaHA63.s:4561   .debug_str:000000000000081b .LASF70
+     /tmp/ccPaHA63.s:4371   .debug_str:0000000000000137 .LASF71
+     /tmp/ccPaHA63.s:4481   .debug_str:00000000000004d4 .LASF72
+     /tmp/ccPaHA63.s:4393   .debug_str:000000000000021d .LASF73
+     /tmp/ccPaHA63.s:4335   .debug_str:0000000000000000 .LASF74
+     /tmp/ccPaHA63.s:4575   .debug_str:0000000000000898 .LASF76
+     /tmp/ccPaHA63.s:4515   .debug_str:0000000000000603 .LASF75
+     /tmp/ccPaHA63.s:4419   .debug_str:00000000000002dc .LASF77
+     /tmp/ccPaHA63.s:4495   .debug_str:0000000000000575 .LASF78
+     /tmp/ccPaHA63.s:4491   .debug_str:000000000000052d .LASF79
+     /tmp/ccPaHA63.s:4343   .debug_str:0000000000000039 .LASF80
+     /tmp/ccPaHA63.s:4363   .debug_str:00000000000000e4 .LASF81
+     /tmp/ccPaHA63.s:4523   .debug_str:000000000000063e .LASF82
+     /tmp/ccPaHA63.s:4413   .debug_str:00000000000002a0 .LASF83
+     /tmp/ccPaHA63.s:4461   .debug_str:0000000000000438 .LASF84
+     /tmp/ccPaHA63.s:4339   .debug_str:000000000000000d .LASF85
+     /tmp/ccPaHA63.s:4563   .debug_str:0000000000000837 .LASF86
+     /tmp/ccPaHA63.s:4577   .debug_str:00000000000008b0 .LASF87
+     /tmp/ccPaHA63.s:4531   .debug_str:000000000000068d .LASF88
+     /tmp/ccPaHA63.s:4519   .debug_str:000000000000060d .LASF89
+     /tmp/ccPaHA63.s:4385   .debug_str:00000000000001c5 .LASF90
+     /tmp/ccPaHA63.s:4387   .debug_str:00000000000001d2 .LASF91
+     /tmp/ccPaHA63.s:4571   .debug_str:0000000000000865 .LASF92
+     /tmp/ccPaHA63.s:4439   .debug_str:000000000000037e .LASF93
+     /tmp/ccPaHA63.s:4417   .debug_str:00000000000002c8 .LASF94
+     /tmp/ccPaHA63.s:4361   .debug_str:00000000000000cc .LASF95
+     /tmp/ccPaHA63.s:4507   .debug_str:00000000000005c3 .LASF96
+     /tmp/ccPaHA63.s:4451   .debug_str:00000000000003eb .LASF97
+     /tmp/ccPaHA63.s:4375   .debug_str:0000000000000162 .LASF98
+     /tmp/ccPaHA63.s:4373   .debug_str:0000000000000159 .LASF99
+     /tmp/ccPaHA63.s:4411   .debug_str:0000000000000292 .LASF100
+GAS LISTING /tmp/ccPaHA63.s 			page 43
+
+
+     /tmp/ccPaHA63.s:4497   .debug_str:000000000000057c .LASF101
+     /tmp/ccPaHA63.s:4389   .debug_str:00000000000001fa .LASF102
+     /tmp/ccPaHA63.s:4347   .debug_str:000000000000005e .LASF103
+     /tmp/ccPaHA63.s:1148   .text:0000000000000620 .LFB21
+     /tmp/ccPaHA63.s:1174   .text:0000000000000654 .LFE21
+     /tmp/ccPaHA63.s:1164   .text:0000000000000644 .LVL113
+     /tmp/ccPaHA63.s:4509   .debug_str:00000000000005c9 .LASF104
+     /tmp/ccPaHA63.s:91     .text:0000000000000060 .LFB20
+     /tmp/ccPaHA63.s:147    .text:00000000000000d0 .LFE20
+     /tmp/ccPaHA63.s:4441   .debug_str:000000000000039e .LASF105
+     /tmp/ccPaHA63.s:3554   .debug_loc:0000000000000000 .LLST2
+     /tmp/ccPaHA63.s:4511   .debug_str:00000000000005f3 .LASF106
+     /tmp/ccPaHA63.s:3568   .debug_loc:0000000000000039 .LLST3
+     /tmp/ccPaHA63.s:127    .text:00000000000000ac .LVL8
+     /tmp/ccPaHA63.s:838    .text:0000000000000494 .LFB19
+     /tmp/ccPaHA63.s:887    .text:00000000000004d0 .LFE19
+     /tmp/ccPaHA63.s:4513   .debug_str:00000000000005fe .LASF108
+     /tmp/ccPaHA63.s:3582   .debug_loc:0000000000000072 .LLST23
+     /tmp/ccPaHA63.s:4483   .debug_str:00000000000004f9 .LASF107
+     /tmp/ccPaHA63.s:3593   .debug_loc:00000000000000a8 .LLST24
+     /tmp/ccPaHA63.s:622    .text:0000000000000374 .LFB18
+     /tmp/ccPaHA63.s:668    .text:00000000000003b0 .LFE18
+     /tmp/ccPaHA63.s:593    .text:0000000000000354 .LFB17
+     /tmp/ccPaHA63.s:616    .text:0000000000000374 .LFE17
+     /tmp/ccPaHA63.s:3604   .debug_loc:00000000000000de .LLST17
+     /tmp/ccPaHA63.s:566    .text:0000000000000338 .LFB16
+     /tmp/ccPaHA63.s:587    .text:0000000000000354 .LFE16
+     /tmp/ccPaHA63.s:3618   .debug_loc:0000000000000117 .LLST16
+     /tmp/ccPaHA63.s:539    .text:000000000000031c .LFB15
+     /tmp/ccPaHA63.s:560    .text:0000000000000338 .LFE15
+     /tmp/ccPaHA63.s:3632   .debug_loc:0000000000000150 .LLST15
+     /tmp/ccPaHA63.s:490    .text:00000000000002e4 .LFB14
+     /tmp/ccPaHA63.s:533    .text:000000000000031c .LFE14
+     /tmp/ccPaHA63.s:4547   .debug_str:0000000000000703 .LASF109
+     /tmp/ccPaHA63.s:3646   .debug_loc:0000000000000189 .LLST14
+     /tmp/ccPaHA63.s:4401   .debug_str:000000000000025e .LASF110
+     /tmp/ccPaHA63.s:465    .text:00000000000002c4 .LFB13
+     /tmp/ccPaHA63.s:484    .text:00000000000002e4 .LFE13
+     /tmp/ccPaHA63.s:389    .text:0000000000000248 .LFB12
+     /tmp/ccPaHA63.s:459    .text:00000000000002c4 .LFE12
+     /tmp/ccPaHA63.s:4365   .debug_str:00000000000000fc .LASF111
+     /tmp/ccPaHA63.s:3658   .debug_loc:00000000000001c0 .LLST11
+     /tmp/ccPaHA63.s:4391   .debug_str:0000000000000217 .LASF112
+     /tmp/ccPaHA63.s:3714   .debug_loc:0000000000000293 .LLST12
+     /tmp/ccPaHA63.s:3741   .debug_loc:00000000000002eb .LLST13
+     /tmp/ccPaHA63.s:1050   .text:00000000000005a0 .LFB11
+     /tmp/ccPaHA63.s:1143   .text:0000000000000620 .LFE11
+     /tmp/ccPaHA63.s:3768   .debug_loc:0000000000000335 .LLST30
+     /tmp/ccPaHA63.s:1086   .text:00000000000005d4 .LBB4
+     /tmp/ccPaHA63.s:1115   .text:0000000000000600 .LBE4
+     /tmp/ccPaHA63.s:3801   .debug_loc:00000000000003bd .LLST31
+     /tmp/ccPaHA63.s:4337   .debug_str:0000000000000006 .LASF113
+     /tmp/ccPaHA63.s:3808   .debug_loc:00000000000003e0 .LLST32
+     /tmp/ccPaHA63.s:1091   .text:00000000000005e0 .LVL106
+     /tmp/ccPaHA63.s:1102   .text:00000000000005f4 .LVL107
+     /tmp/ccPaHA63.s:1017   .text:0000000000000574 .LFB10
+     /tmp/ccPaHA63.s:1044   .text:00000000000005a0 .LFE10
+GAS LISTING /tmp/ccPaHA63.s 			page 44
+
+
+     /tmp/ccPaHA63.s:3815   .debug_loc:0000000000000403 .LLST29
+     /tmp/ccPaHA63.s:1033   .text:0000000000000590 .LVL103
+     /tmp/ccPaHA63.s:805    .text:0000000000000468 .LFB9
+     /tmp/ccPaHA63.s:832    .text:0000000000000494 .LFE9
+     /tmp/ccPaHA63.s:3829   .debug_loc:000000000000043c .LLST22
+     /tmp/ccPaHA63.s:821    .text:0000000000000484 .LVL81
+     /tmp/ccPaHA63.s:893    .text:00000000000004d0 .LFB8
+     /tmp/ccPaHA63.s:1011   .text:0000000000000574 .LFE8
+     /tmp/ccPaHA63.s:3843   .debug_loc:0000000000000475 .LLST25
+     /tmp/ccPaHA63.s:3880   .debug_loc:0000000000000510 .LLST26
+     /tmp/ccPaHA63.s:930    .text:0000000000000508 .LBB3
+     /tmp/ccPaHA63.s:971    .text:0000000000000544 .LBE3
+     /tmp/ccPaHA63.s:3905   .debug_loc:0000000000000572 .LLST27
+     /tmp/ccPaHA63.s:3926   .debug_loc:00000000000005d0 .LLST28
+     /tmp/ccPaHA63.s:951    .text:000000000000052c .LVL92
+     /tmp/ccPaHA63.s:958    .text:0000000000000538 .LVL93
+     /tmp/ccPaHA63.s:674    .text:00000000000003b0 .LFB7
+     /tmp/ccPaHA63.s:799    .text:0000000000000468 .LFE7
+     /tmp/ccPaHA63.s:3933   .debug_loc:00000000000005f3 .LLST18
+     /tmp/ccPaHA63.s:4002   .debug_loc:00000000000006f9 .LLST19
+     /tmp/ccPaHA63.s:4565   .debug_str:0000000000000840 .LASF114
+     /tmp/ccPaHA63.s:4036   .debug_loc:0000000000000782 .LLST20
+     /tmp/ccPaHA63.s:4047   .debug_loc:00000000000007b8 .LLST21
+     /tmp/ccPaHA63.s:726    .text:000000000000040c .LVL64
+     /tmp/ccPaHA63.s:730    .text:0000000000000414 .LVL65
+     /tmp/ccPaHA63.s:273    .text:000000000000018c .LFB6
+     /tmp/ccPaHA63.s:383    .text:0000000000000248 .LFE6
+     /tmp/ccPaHA63.s:4054   .debug_loc:00000000000007db .LLST8
+     /tmp/ccPaHA63.s:4123   .debug_loc:00000000000008e1 .LLST9
+     /tmp/ccPaHA63.s:4207   .debug_loc:00000000000009d2 .LLST10
+     /tmp/ccPaHA63.s:189    .text:00000000000000f8 .LFB5
+     /tmp/ccPaHA63.s:267    .text:000000000000018c .LFE5
+     /tmp/ccPaHA63.s:4457   .debug_str:0000000000000413 .LASF115
+     /tmp/ccPaHA63.s:4244   .debug_loc:0000000000000a44 .LLST4
+     /tmp/ccPaHA63.s:4463   .debug_str:0000000000000441 .LASF116
+     /tmp/ccPaHA63.s:4262   .debug_loc:0000000000000a90 .LLST5
+     /tmp/ccPaHA63.s:4283   .debug_loc:0000000000000adf .LLST6
+     /tmp/ccPaHA63.s:4290   .debug_loc:0000000000000b02 .LLST7
+     /tmp/ccPaHA63.s:219    .text:0000000000000130 .LVL13
+     /tmp/ccPaHA63.s:242    .text:0000000000000168 .LVL17
+     /tmp/ccPaHA63.s:153    .text:00000000000000d0 .LFB4
+     /tmp/ccPaHA63.s:183    .text:00000000000000f8 .LFE4
+     /tmp/ccPaHA63.s:4535   .debug_str:00000000000006b1 .LASF123
+     /tmp/ccPaHA63.s:9      .text:0000000000000000 .LFB3
+     /tmp/ccPaHA63.s:52     .text:0000000000000034 .LFE3
+     /tmp/ccPaHA63.s:4297   .debug_loc:0000000000000b25 .LLST0
+     /tmp/ccPaHA63.s:4308   .debug_loc:0000000000000b5b .LLST1
+     /tmp/ccPaHA63.s:4473   .debug_str:0000000000000483 .LASF124
+     /tmp/ccPaHA63.s:58     .text:0000000000000034 .LFB1
+     /tmp/ccPaHA63.s:84     .text:0000000000000060 .LFE1
+     /tmp/ccPaHA63.s:94     .text:0000000000000060 .LVL6
+     /tmp/ccPaHA63.s:120    .text:000000000000009c .LVL7
+     /tmp/ccPaHA63.s:841    .text:0000000000000494 .LVL82
+     /tmp/ccPaHA63.s:852    .text:00000000000004a8 .LVL83
+     /tmp/ccPaHA63.s:856    .text:00000000000004ac .LVL84
+     /tmp/ccPaHA63.s:869    .text:00000000000004bc .LVL85
+     /tmp/ccPaHA63.s:879    .text:00000000000004c8 .LVL86
+GAS LISTING /tmp/ccPaHA63.s 			page 45
+
+
+     /tmp/ccPaHA63.s:596    .text:0000000000000354 .LVL58
+     /tmp/ccPaHA63.s:606    .text:0000000000000364 .LVL59
+     /tmp/ccPaHA63.s:569    .text:0000000000000338 .LVL56
+     /tmp/ccPaHA63.s:579    .text:0000000000000348 .LVL57
+     /tmp/ccPaHA63.s:542    .text:000000000000031c .LVL54
+     /tmp/ccPaHA63.s:552    .text:000000000000032c .LVL55
+     /tmp/ccPaHA63.s:500    .text:00000000000002f0 .LVL49
+     /tmp/ccPaHA63.s:507    .text:00000000000002fc .LVL51
+     /tmp/ccPaHA63.s:392    .text:0000000000000248 .LVL36
+     /tmp/ccPaHA63.s:411    .text:000000000000027c .LVL37
+     /tmp/ccPaHA63.s:413    .text:0000000000000280 .LVL38
+     /tmp/ccPaHA63.s:440    .text:00000000000002ac .LVL43
+     /tmp/ccPaHA63.s:445    .text:00000000000002b0 .LVL44
+     /tmp/ccPaHA63.s:447    .text:00000000000002b4 .LVL45
+     /tmp/ccPaHA63.s:451    .text:00000000000002b8 .LVL46
+     /tmp/ccPaHA63.s:453    .text:00000000000002bc .LVL47
+     /tmp/ccPaHA63.s:456    .text:00000000000002c0 .LVL48
+     /tmp/ccPaHA63.s:418    .text:000000000000028c .LVL39
+     /tmp/ccPaHA63.s:430    .text:00000000000002a0 .LVL42
+     /tmp/ccPaHA63.s:422    .text:0000000000000294 .LVL40
+     /tmp/ccPaHA63.s:427    .text:000000000000029c .LVL41
+     /tmp/ccPaHA63.s:1053   .text:00000000000005a0 .LVL104
+     /tmp/ccPaHA63.s:1078   .text:00000000000005cc .LVL105
+     /tmp/ccPaHA63.s:1109   .text:0000000000000600 .LVL109
+     /tmp/ccPaHA63.s:1118   .text:0000000000000604 .LVL110
+     /tmp/ccPaHA63.s:1121   .text:0000000000000608 .LVL111
+     /tmp/ccPaHA63.s:1138   .text:0000000000000618 .LVL112
+     /tmp/ccPaHA63.s:1107   .text:00000000000005fc .LVL108
+     /tmp/ccPaHA63.s:1020   .text:0000000000000574 .LVL102
+     /tmp/ccPaHA63.s:808    .text:0000000000000468 .LVL80
+     /tmp/ccPaHA63.s:896    .text:00000000000004d0 .LVL87
+     /tmp/ccPaHA63.s:922    .text:0000000000000500 .LVL89
+     /tmp/ccPaHA63.s:965    .text:0000000000000544 .LVL95
+     /tmp/ccPaHA63.s:974    .text:0000000000000548 .LVL96
+     /tmp/ccPaHA63.s:977    .text:000000000000054c .LVL97
+     /tmp/ccPaHA63.s:996    .text:000000000000055c .LVL99
+     /tmp/ccPaHA63.s:1000   .text:0000000000000564 .LVL100
+     /tmp/ccPaHA63.s:920    .text:00000000000004fc .LVL88
+     /tmp/ccPaHA63.s:985    .text:0000000000000550 .LVL98
+     /tmp/ccPaHA63.s:932    .text:0000000000000508 .LVL90
+     /tmp/ccPaHA63.s:938    .text:0000000000000510 .LVL91
+     /tmp/ccPaHA63.s:1006   .text:000000000000056c .LVL101
+     /tmp/ccPaHA63.s:963    .text:0000000000000540 .LVL94
+     /tmp/ccPaHA63.s:677    .text:00000000000003b0 .LVL61
+     /tmp/ccPaHA63.s:758    .text:0000000000000438 .LVL69
+     /tmp/ccPaHA63.s:768    .text:0000000000000444 .LVL71
+     /tmp/ccPaHA63.s:770    .text:0000000000000448 .LVL72
+     /tmp/ccPaHA63.s:774    .text:000000000000044c .LVL73
+     /tmp/ccPaHA63.s:776    .text:0000000000000450 .LVL74
+     /tmp/ccPaHA63.s:780    .text:0000000000000454 .LVL75
+     /tmp/ccPaHA63.s:783    .text:0000000000000458 .LVL76
+     /tmp/ccPaHA63.s:791    .text:000000000000045c .LVL77
+     /tmp/ccPaHA63.s:793    .text:0000000000000460 .LVL78
+     /tmp/ccPaHA63.s:796    .text:0000000000000464 .LVL79
+     /tmp/ccPaHA63.s:724    .text:0000000000000404 .LVL63
+     /tmp/ccPaHA63.s:763    .text:000000000000043c .LVL70
+     /tmp/ccPaHA63.s:707    .text:00000000000003e8 .LVL62
+GAS LISTING /tmp/ccPaHA63.s 			page 46
+
+
+     /tmp/ccPaHA63.s:754    .text:0000000000000430 .LVL68
+     /tmp/ccPaHA63.s:744    .text:0000000000000424 .LVL67
+     /tmp/ccPaHA63.s:276    .text:000000000000018c .LVL19
+     /tmp/ccPaHA63.s:342    .text:0000000000000214 .LVL25
+     /tmp/ccPaHA63.s:352    .text:0000000000000220 .LVL26
+     /tmp/ccPaHA63.s:357    .text:0000000000000224 .LVL27
+     /tmp/ccPaHA63.s:359    .text:0000000000000228 .LVL28
+     /tmp/ccPaHA63.s:363    .text:000000000000022c .LVL29
+     /tmp/ccPaHA63.s:365    .text:0000000000000230 .LVL30
+     /tmp/ccPaHA63.s:368    .text:0000000000000234 .LVL31
+     /tmp/ccPaHA63.s:370    .text:0000000000000238 .LVL32
+     /tmp/ccPaHA63.s:374    .text:000000000000023c .LVL33
+     /tmp/ccPaHA63.s:376    .text:0000000000000240 .LVL34
+     /tmp/ccPaHA63.s:380    .text:0000000000000244 .LVL35
+     /tmp/ccPaHA63.s:296    .text:00000000000001c4 .LVL20
+     /tmp/ccPaHA63.s:303    .text:00000000000001d4 .LVL21
+     /tmp/ccPaHA63.s:305    .text:00000000000001d8 .LVL22
+     /tmp/ccPaHA63.s:333    .text:0000000000000204 .LVL23
+     /tmp/ccPaHA63.s:337    .text:000000000000020c .LVL24
+     /tmp/ccPaHA63.s:192    .text:00000000000000f8 .LVL10
+     /tmp/ccPaHA63.s:217    .text:0000000000000128 .LVL12
+     /tmp/ccPaHA63.s:260    .text:0000000000000184 .LVL18
+     /tmp/ccPaHA63.s:213    .text:0000000000000124 .LVL11
+     /tmp/ccPaHA63.s:227    .text:0000000000000144 .LVL14
+     /tmp/ccPaHA63.s:240    .text:0000000000000160 .LVL16
+     /tmp/ccPaHA63.s:235    .text:0000000000000158 .LVL15
+     /tmp/ccPaHA63.s:13     .text:0000000000000000 .LVL0
+     /tmp/ccPaHA63.s:25     .text:0000000000000014 .LVL2
+     /tmp/ccPaHA63.s:22     .text:0000000000000010 .LVL1
+     /tmp/ccPaHA63.s:1202   .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+_ZN7KThread7runningE
+_ZN7KThread5blockEv
+_ZN7KThread7unblockEPS_
